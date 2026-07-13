@@ -41,6 +41,7 @@ src/
 8. **Evitá `any`.** Tipado estricto. Los DTOs y validadores Zod son la fuente de verdad.
 9. **No usamos Docker.** La base de datos local corre en PostgreSQL propio del entorno (puerto 5433 en desarrollo).
 10. **PWA.** En Fase 6 se agregará `manifest.json`, service worker e iconos.
+11. **shadcn/ui preset Nova.** El componente `Button` no soporta `asChild`. Para triggers personalizados (DropdownMenu, etc.) usá la prop `render` del componente base.
 
 ## Convenciones de nombres
 
@@ -67,11 +68,13 @@ npm run db:studio        # Explorar base de datos
 - Cliente en `src/lib/auth-client.ts`.
 - Endpoints expuestos en `src/app/api/auth/[...all]/route.ts`.
 - Para obtener sesión en server components/actions usá `src/server/services/session-service.ts`.
+- Los formularios de auth usan `authClient.signIn.email` / `authClient.signUp.email` (cliente de Better Auth).
+- Las páginas de auth y la home verifican sesión y redirigen a `/dashboard` si el usuario ya inició sesión.
 
 ## Fases del proyecto
 
-1. **Fase 1 — Fundamentos** (actual): arquitectura, diseño, Prisma, Better Auth.
-2. **Fase 2 — Auth, layout y dashboard.**
+1. **Fase 1 — Fundamentos** (completada): arquitectura, diseño, Prisma, Better Auth.
+2. **Fase 2 — Auth, layout y dashboard** (completada): formularios, layout responsive, dashboard ejecutivo con KPIs y gráficos.
 3. **Fase 3 — Jornadas, gastos y combustible.**
 4. **Fase 4 — Estadísticas, gráficos y calendario.**
 5. **Fase 5 — Exportaciones e importaciones.**
