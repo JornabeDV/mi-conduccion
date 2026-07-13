@@ -91,7 +91,7 @@ export function GoalForm({ initialData, onSuccess }: GoalFormProps) {
           onValueChange={(value) => setValue("period", value as GoalPeriod, { shouldValidate: true })}
         >
           <SelectTrigger className="w-full">
-            <SelectValue />
+            <SelectValue>{GOAL_PERIOD_LABELS[watch("period")]}</SelectValue>
           </SelectTrigger>
           <SelectContent>
             {GOAL_PERIODS.map((period) => (
