@@ -60,7 +60,7 @@ export function ExpenseForm({ vehicles, initialData, onSuccess }: ExpenseFormPro
           amount: Number(initialData.amount),
         }
       : {
-          vehicleId: null,
+          vehicleId: vehicles[0]?.id ?? null,
           category: "OTHER",
           date: formatDateInput(new Date()) as unknown as Date,
           description: "",

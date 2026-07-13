@@ -84,7 +84,7 @@ export function WorkShiftForm({ vehicles, initialData, onSuccess }: WorkShiftFor
           })),
         }
       : {
-          vehicleId: null,
+          vehicleId: vehicles[0]?.id ?? null,
           date: formatDateInput(new Date()) as unknown as Date,
           startedAt: formatDateTimeInput(new Date()) as unknown as Date,
           endedAt: null,
@@ -223,7 +223,7 @@ export function WorkShiftForm({ vehicles, initialData, onSuccess }: WorkShiftFor
                   }
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue />
+                    {INCOME_TYPE_LABELS[watch(`incomes.${index}.type`)]}
                   </SelectTrigger>
                   <SelectContent>
                     {INCOME_TYPES.map((t) => (
@@ -244,7 +244,7 @@ export function WorkShiftForm({ vehicles, initialData, onSuccess }: WorkShiftFor
                     }
                   >
                     <SelectTrigger className="w-full">
-                      <SelectValue />
+                      {PLATFORM_LABELS[watch(`incomes.${index}.platform`) ?? "OTHER"]}
                     </SelectTrigger>
                     <SelectContent>
                       {PLATFORMS.map((p) => (
