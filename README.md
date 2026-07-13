@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mi Conducción
 
-## Getting Started
+ERP personal para conductores de plataformas de transporte (Uber, Cabify, DiDi, Maxim, InDrive).
 
-First, run the development server:
+## Estado
+
+**Fase 1 completada:** arquitectura de producción, sistema de diseño, modelo Prisma, autenticación con Better Auth y base de datos configurada.
+
+## Stack
+
+- Next.js 16 (App Router)
+- React 19 + TypeScript strict
+- Tailwind CSS v4 + shadcn/ui
+- Better Auth
+- Prisma ORM 6 + PostgreSQL
+- Vercel (deployment objetivo)
+
+## Requisitos
+
+- Node.js 22+
+- npm 10+
+- PostgreSQL 14+ (local o cloud)
+
+## Instalación
+
+```bash
+npm install
+```
+
+## Variables de entorno
+
+Copiá `.env.example` a `.env` y completá los valores:
+
+```bash
+cp .env.example .env
+```
+
+Variables requeridas:
+
+| Variable | Descripción |
+|----------|-------------|
+| `DATABASE_URL` | URL de conexión a PostgreSQL |
+| `BETTER_AUTH_SECRET` | Clave secreta de 32+ caracteres para Better Auth |
+| `BETTER_AUTH_URL` | URL base de la app (`http://localhost:3000` en dev) |
+| `NEXT_PUBLIC_APP_URL` | URL pública de la app |
+
+Generar secreto:
+
+```bash
+openssl rand -base64 32
+```
+
+## Base de datos
+
+Asegurate de tener PostgreSQL corriendo y la base de datos creada. Luego:
+
+```bash
+npm run db:migrate
+npm run db:seed
+```
+
+El seed crea un usuario de prueba:
+
+- Email: `driver@example.com`
+- Contraseña: `password123`
+
+## Desarrollo
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abrir [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts útiles
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build            # Build de producción
+npm run lint             # ESLint
+npm run db:generate      # Generar Prisma Client
+npm run db:migrate       # Crear migración
+npm run db:deploy        # Aplicar migraciones
+npm run db:seed          # Seed de desarrollo
+npm run db:studio        # Prisma Studio
+```
 
-## Learn More
+## Estructura
 
-To learn more about Next.js, take a look at the following resources:
+Ver `AGENTS.md` para convenciones de arquitectura, nombres y patrones.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Licencia
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Privado.
