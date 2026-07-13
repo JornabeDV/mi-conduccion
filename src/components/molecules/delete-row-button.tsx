@@ -5,11 +5,12 @@ import { DeleteButton } from "@/components/molecules/delete-button";
 import type { ActionResult } from "@/server/actions/utils";
 
 type DeleteRowButtonProps = {
-  action: () => Promise<ActionResult>;
+  action: (id: string) => Promise<ActionResult>;
+  id: string;
   label?: string;
 };
 
-export function DeleteRowButton({ action, label }: DeleteRowButtonProps) {
+export function DeleteRowButton({ action, id, label }: DeleteRowButtonProps) {
   const router = useRouter();
-  return <DeleteButton action={action} onSuccess={() => router.refresh()} label={label} />;
+  return <DeleteButton action={() => action(id)} onSuccess={() => router.refresh()} label={label} />;
 }

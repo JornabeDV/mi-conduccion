@@ -73,11 +73,13 @@ export default async function CombustiblePage() {
                     <TableCell>
                       {log.efficiencyKmPerL ? `${formatNumber(Number(log.efficiencyKmPerL))} km/L` : "—"}
                     </TableCell>
-                    <TableCell className="flex justify-end gap-1">
-                      <Link href={`/combustible/${log.id}/editar`} className={buttonVariants({ variant: "ghost", size: "icon-sm" })}>
-                        <Pencil className="size-4" />
-                      </Link>
-                      <DeleteRowButton action={() => deleteFuel(log.id)} />
+                    <TableCell className="text-right">
+                      <div className="inline-flex justify-end gap-1">
+                        <Link href={`/combustible/${log.id}/editar`} className={buttonVariants({ variant: "ghost", size: "icon-sm" })}>
+                          <Pencil className="size-4" />
+                        </Link>
+                        <DeleteRowButton action={deleteFuel} id={log.id} />
+                      </div>
                     </TableCell>
                   </TableRow>
                 );

@@ -70,11 +70,13 @@ export default async function GastosPage() {
                     <TableCell>{expense.description}</TableCell>
                     <TableCell>{vehicle ? `${vehicle.brand} ${vehicle.model}` : "—"}</TableCell>
                     <TableCell>{formatCurrency(Number(expense.amount))}</TableCell>
-                    <TableCell className="flex justify-end gap-1">
-                      <Link href={`/gastos/${expense.id}/editar`} className={buttonVariants({ variant: "ghost", size: "icon-sm" })}>
-                        <Pencil className="size-4" />
-                      </Link>
-                      <DeleteRowButton action={() => deleteExpense(expense.id)} />
+                    <TableCell className="text-right">
+                      <div className="inline-flex justify-end gap-1">
+                        <Link href={`/gastos/${expense.id}/editar`} className={buttonVariants({ variant: "ghost", size: "icon-sm" })}>
+                          <Pencil className="size-4" />
+                        </Link>
+                        <DeleteRowButton action={deleteExpense} id={expense.id} />
+                      </div>
                     </TableCell>
                   </TableRow>
                 );

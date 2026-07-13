@@ -63,11 +63,13 @@ export default async function JornadasPage() {
                   <TableCell>{formatNumber(shift.distanceKm)} km</TableCell>
                   <TableCell>{formatNumber(shift.onlineHours)} h</TableCell>
                   <TableCell>{formatCurrency(shift.totalIncome)}</TableCell>
-                  <TableCell className="flex justify-end gap-1">
-                    <Link href={`/jornadas/${shift.id}/editar`} className={buttonVariants({ variant: "ghost", size: "icon-sm" })}>
-                      <Pencil className="size-4" />
-                    </Link>
-                    <DeleteRowButton action={() => deleteWorkShift(shift.id)} />
+                  <TableCell className="text-right">
+                    <div className="inline-flex justify-end gap-1">
+                      <Link href={`/jornadas/${shift.id}/editar`} className={buttonVariants({ variant: "ghost", size: "icon-sm" })}>
+                        <Pencil className="size-4" />
+                      </Link>
+                      <DeleteRowButton action={deleteWorkShift} id={shift.id} />
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
