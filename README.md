@@ -4,7 +4,8 @@ ERP personal para conductores de plataformas de transporte (Uber, Cabify, DiDi, 
 
 ## Estado
 
-**Fase 1 completada:** arquitectura de producción, sistema de diseño, modelo Prisma, autenticación con Better Auth y base de datos configurada.
+**Fase 1 completada:** arquitectura de producción, sistema de diseño, modelo Prisma, autenticación con Better Auth y base de datos configurada.  
+**Fase 2 completada:** formularios de login/registro, layout protegido responsive y dashboard ejecutivo con KPIs y gráficos reales.
 
 ## Stack
 

@@ -1,7 +1,15 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { buttonVariants } from "@/components/ui/button";
+import { getSessionOrNull } from "@/server/services/session-service";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const session = await getSessionOrNull();
+
+  if (session) {
+    redirect("/dashboard");
+  }
+
   return (
     <main className="flex-1 flex flex-col items-center justify-center px-6 py-24 text-center">
       <div className="max-w-2xl space-y-8">
@@ -18,7 +26,10 @@ export default function HomePage() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
             href="/login"
-            className={buttonVariants({ size: "lg", className: "min-w-[10rem]" })}
+            className={buttonVariants({
+              size: "lg",
+              className: "min-w-[10rem]",
+            })}
           >
             Iniciar sesión
           </Link>
