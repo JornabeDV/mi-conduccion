@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { formatNumberInput } from "@/shared/helpers/number-format";
 
 export function formatCurrency(
   value: number | null | undefined,
@@ -22,9 +23,7 @@ export function formatNumber(value: number | null | undefined): string {
     return "—";
   }
 
-  return new Intl.NumberFormat("es-AR", {
-    maximumFractionDigits: 2,
-  }).format(value);
+  return formatNumberInput(value, { decimals: 2 });
 }
 
 export function formatDate(date: Date | string | null | undefined): string {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
-import { useForm, type Resolver } from "react-hook-form";
+import { useForm, type Resolver, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { FormField } from "@/components/molecules/form-field";
+import { NumericInput } from "@/components/molecules/numeric-input";
 import { formatDateInput } from "@/shared/helpers/format";
 import { EXPENSE_CATEGORIES, EXPENSE_CATEGORY_LABELS } from "@/shared/constants/expense-categories";
 import type { VehicleOption } from "@/shared/types/vehicle";
@@ -43,6 +44,7 @@ export function ExpenseForm({ vehicles, initialData, onSuccess }: ExpenseFormPro
 
   const {
     register,
+    control,
     handleSubmit,
     watch,
     setValue,
@@ -138,7 +140,20 @@ export function ExpenseForm({ vehicles, initialData, onSuccess }: ExpenseFormPro
         </FormField>
 
         <FormField label="Monto" error={errors.amount?.message}>
-          <Input type="number" min={0} step={0.01} {...register("amount")} />
+          <Controller
+            name="amount"
+            control={control}
+            render={({ field }) => (
+              <NumericInput
+                value={field.value}
+                onChange={field.onChange}
+                decimals={2}
+                min={0}
+                prefix="$ "
+                placeholder="0,00"
+              />
+            )}
+          />
         </FormField>
       </div>
 
