@@ -78,6 +78,7 @@ npm run db:studio        # Explorar base de datos
 3. **Fase 3 — Jornadas, gastos y combustible.**
 4. **Fase 4 — Estadísticas, gráficos y calendario.**
 5. **Fase 5 — Exportaciones e importaciones.**
-6. **Fase 6 — PWA, optimización, SEO, accesibilidad y testing.**
+6. **Fase 6 — PWA, optimización, SEO, accesibilidad.**
+7. **Fase 7 — Testing.**
 
 No avanzar a la siguiente fase sin validar la anterior con build exitoso.

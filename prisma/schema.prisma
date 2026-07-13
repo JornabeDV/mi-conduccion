@@ -204,6 +204,7 @@ model WorkShift {
   endedAt     DateTime? @map("ended_at")
   onlineHours Decimal?  @map("online_hours") @db.Decimal(5, 2)
   totalTrips  Int       @default(0) @map("total_trips")
+  distanceKm  Decimal?  @map("distance_km") @db.Decimal(10, 2)
   notes       String?
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
@@ -264,19 +265,25 @@ model Expense {
 }
 
 model FuelLog {
-  id            String    @id @default(uuid())
-  userId        String
-  vehicleId     String
-  expenseId     String?   @unique @map("expense_id")
-  date          DateTime  @db.Date
-  station       String?
-  liters        Decimal   @db.Decimal(10, 3)
-  pricePerLiter Decimal   @map("price_per_liter") @db.Decimal(12, 4)
-  totalAmount   Decimal   @map("total_amount") @db.Decimal(12, 2)
-  odometerKm    Decimal   @map("odometer_km") @db.Decimal(10, 2)
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
-  deletedAt     DateTime? @map("deleted_at")
+  id                   String    @id @default(uuid())
+  userId               String
+  vehicleId            String
+  expenseId            String?   @unique @map("expense_id")
+  date                 DateTime  @db.Date
+  station              String?
+  notes                String?
+  liters               Decimal   @db.Decimal(10, 3)
+  pricePerLiter        Decimal   @map("price_per_liter") @db.Decimal(12, 4)
+  totalAmount          Decimal   @map("total_amount") @db.Decimal(12, 2)
+  odometerKm           Decimal   @map("odometer_km") @db.Decimal(10, 2)
+  fullTank             Boolean   @default(true) @map("full_tank")
+  consumptionLPer100Km Decimal?  @map("consumption_l_per_100km") @db.Decimal(10, 2)
+  efficiencyKmPerL     Decimal?  @map("efficiency_km_per_l") @db.Decimal(10, 2)
+  costPerKm            Decimal?  @map("cost_per_km") @db.Decimal(12, 4)
+  estimatedRangeKm     Decimal?  @map("estimated_range_km") @db.Decimal(10, 2)
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
+  deletedAt            DateTime? @map("deleted_at")
 
   user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   vehicle Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)

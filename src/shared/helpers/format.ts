@@ -52,3 +52,13 @@ export function formatPercentage(
 
   return `${value.toFixed(decimals)}%`;
 }
+
+export function formatDateInput(date: Date | string | null | undefined): string {
+  if (!date) return "";
+  return format(new Date(date), "yyyy-MM-dd", { locale: es });
+}
+
+export function formatDateTimeInput(date: Date | string | null | undefined): string {
+  if (!date) return "";
+  return format(new Date(date), "yyyy-MM-dd'T'HH:mm", { locale: es });
+}

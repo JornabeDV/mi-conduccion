@@ -2,12 +2,12 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
 import { prisma } from "@/lib/prisma";
-import { env } from "@/lib/env";
+import { serverEnv } from "@/lib/env/server";
 
 export const auth = betterAuth({
-  appName: env.NEXT_PUBLIC_APP_NAME,
-  baseURL: env.BETTER_AUTH_URL,
-  secret: env.BETTER_AUTH_SECRET,
+  appName: serverEnv.NEXT_PUBLIC_APP_NAME,
+  baseURL: serverEnv.BETTER_AUTH_URL,
+  secret: serverEnv.BETTER_AUTH_SECRET,
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
