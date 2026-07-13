@@ -1,3 +1,4 @@
+import { BackLink } from "@/components/molecules/back-link";
 import { redirect, notFound } from "next/navigation";
 import { getSession } from "@/server/services/session-service";
 import { fuelService } from "@/server/services/fuel-service";
@@ -19,6 +20,7 @@ export default async function EditarCargaPage({ params }: { params: Promise<{ id
 
   return (
     <div className="mx-auto max-w-2xl space-y-4">
+      <BackLink href="/combustible" />
       <div>
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Editar carga</h1>
         <p className="text-sm text-muted-foreground">Modificá los datos de la carga</p>

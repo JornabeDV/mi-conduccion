@@ -1,3 +1,4 @@
+import { BackLink } from "@/components/molecules/back-link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/server/services/session-service";
 import { vehicleRepository } from "@/server/repositories/vehicle-repository";
@@ -12,6 +13,7 @@ export default async function NuevaCargaPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-4">
+      <BackLink href="/combustible" />
       <div>
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Nueva carga</h1>
         <p className="text-sm text-muted-foreground">Registrá una carga de combustible</p>

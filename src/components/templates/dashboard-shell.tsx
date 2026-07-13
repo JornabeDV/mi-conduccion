@@ -67,7 +67,7 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
 
         {/* Main content */}
         <main className="flex-1 pb-20 md:pb-6">
-          <div className="container py-6">{children}</div>
+          <div className="container px-4 py-6 md:px-6">{children}</div>
         </main>
 
         {/* Mobile bottom nav */}

@@ -1,3 +1,4 @@
+import { BackLink } from "@/components/molecules/back-link";
 import { redirect, notFound } from "next/navigation";
 import { getSession } from "@/server/services/session-service";
 import { vehicleService } from "@/server/services/vehicle-service";
@@ -16,6 +17,7 @@ export default async function EditarVehiculoPage({ params }: { params: Promise<{
 
   return (
     <div className="mx-auto max-w-2xl space-y-4">
+      <BackLink href="/vehiculo" />
       <div>
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Editar vehículo</h1>
         <p className="text-sm text-muted-foreground">Modificá los datos del vehículo</p>

@@ -1,9 +1,11 @@
+import { BackLink } from "@/components/molecules/back-link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { VehicleForm } from "@/components/organisms/vehicle-form";
 
 export default function NuevoVehiculoPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-4">
+      <BackLink href="/vehiculo" />
       <div>
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Nuevo vehículo</h1>
         <p className="text-sm text-muted-foreground">Completá los datos del vehículo</p>

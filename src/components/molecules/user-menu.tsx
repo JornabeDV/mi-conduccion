@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -47,26 +48,28 @@ export function UserMenu({ user }: UserMenuProps) {
         }
       />
       <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel className="font-normal">
-          <div className="flex flex-col gap-1">
-            <p className="text-sm font-medium">{user.name}</p>
-            <p className="text-xs text-muted-foreground">{user.email}</p>
-          </div>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem disabled>
-          <User className="mr-2 size-4" />
-          Perfil
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={handleSignOut}
-          variant="destructive"
-          className="cursor-pointer"
-        >
-          <LogOut className="mr-2 size-4" />
-          Cerrar sesión
-        </DropdownMenuItem>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel className="font-normal">
+            <div className="flex flex-col gap-1">
+              <p className="text-sm font-medium">{user.name}</p>
+              <p className="text-xs text-muted-foreground">{user.email}</p>
+            </div>
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem disabled>
+            <User className="mr-2 size-4" />
+            Perfil
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            onClick={handleSignOut}
+            variant="destructive"
+            className="cursor-pointer"
+          >
+            <LogOut className="mr-2 size-4" />
+            Cerrar sesión
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );

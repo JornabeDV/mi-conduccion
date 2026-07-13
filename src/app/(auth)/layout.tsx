@@ -1,3 +1,5 @@
+import { Logo } from "@/components/atoms/logo";
+
 export default function AuthLayout({
   children,
 }: Readonly<{
@@ -5,6 +7,9 @@ export default function AuthLayout({
 }>) {
   return (
     <div className="flex min-h-full flex-col items-center justify-center px-6 py-12">
+      <div className="mb-6">
+        <Logo href="/" showText={false} imageClassName="h-12 w-12" />
+      </div>
       <div className="w-full max-w-sm space-y-6">{children}</div>
     </div>
   );

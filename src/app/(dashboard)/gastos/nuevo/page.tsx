@@ -1,3 +1,4 @@
+import { BackLink } from "@/components/molecules/back-link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/server/services/session-service";
 import { vehicleRepository } from "@/server/repositories/vehicle-repository";
@@ -12,6 +13,7 @@ export default async function NuevoGastoPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-4">
+      <BackLink href="/gastos" />
       <div>
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Nuevo gasto</h1>
         <p className="text-sm text-muted-foreground">Registrá un gasto de tu actividad</p>

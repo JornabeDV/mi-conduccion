@@ -1,3 +1,4 @@
+import { BackLink } from "@/components/molecules/back-link";
 import { redirect, notFound } from "next/navigation";
 import { getSession } from "@/server/services/session-service";
 import { goalService } from "@/server/services/goal-service";
@@ -16,6 +17,7 @@ export default async function EditarObjetivoPage({ params }: { params: Promise<{
 
   return (
     <div className="mx-auto max-w-2xl space-y-4">
+      <BackLink href="/objetivos" />
       <div>
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Editar objetivo</h1>
         <p className="text-sm text-muted-foreground">Modificá la meta de ingresos</p>
