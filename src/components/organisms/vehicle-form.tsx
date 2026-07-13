@@ -109,7 +109,7 @@ export function VehicleForm({ initialData, onSuccess }: VehicleFormProps) {
             name="year"
             control={control}
             render={({ field }) => (
-              <NumericInput value={field.value} onChange={field.onChange} decimals={0} min={1900} placeholder="Ej. 2020" />
+              <NumericInput value={field.value} onChange={field.onChange} decimals={0} placeholder="Ej. 2020" />
             )}
           />
         </FormField>
