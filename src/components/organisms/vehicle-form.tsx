@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
-import { useForm, type Resolver } from "react-hook-form";
+import { useForm, type Resolver, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { FormField } from "@/components/molecules/form-field";
+import { NumericInput } from "@/components/molecules/numeric-input";
 import { FUEL_TYPES, FUEL_TYPE_LABELS, type FuelType } from "@/shared/constants/fuel-types";
 
 type VehicleFormInitialData = {
@@ -42,6 +43,7 @@ export function VehicleForm({ initialData, onSuccess }: VehicleFormProps) {
 
   const {
     register,
+    control,
     handleSubmit,
     watch,
     setValue,
@@ -103,7 +105,13 @@ export function VehicleForm({ initialData, onSuccess }: VehicleFormProps) {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <FormField label="Año" error={errors.year?.message}>
-          <Input type="number" {...register("year")} placeholder="Ej. 2020" />
+          <Controller
+            name="year"
+            control={control}
+            render={({ field }) => (
+              <NumericInput value={field.value} onChange={field.onChange} decimals={0} min={1900} placeholder="Ej. 2020" />
+            )}
+          />
         </FormField>
 
         <FormField label="Patente" error={errors.licensePlate?.message}>
@@ -113,11 +121,23 @@ export function VehicleForm({ initialData, onSuccess }: VehicleFormProps) {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <FormField label="Kilometraje actual" error={errors.currentKm?.message}>
-          <Input type="number" min={0} step={0.1} {...register("currentKm")} />
+          <Controller
+            name="currentKm"
+            control={control}
+            render={({ field }) => (
+              <NumericInput value={field.value} onChange={field.onChange} decimals={1} min={0} />
+            )}
+          />
         </FormField>
 
         <FormField label="Capacidad del tanque (L)" error={errors.tankCapacity?.message}>
-          <Input type="number" min={0} step={0.1} {...register("tankCapacity")} placeholder="Opcional" />
+          <Controller
+            name="tankCapacity"
+            control={control}
+            render={({ field }) => (
+              <NumericInput value={field.value} onChange={field.onChange} decimals={1} min={0} placeholder="Opcional" />
+            )}
+          />
         </FormField>
       </div>
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransition, useEffect } from "react";
-import { useForm, type Resolver } from "react-hook-form";
+import { useForm, type Resolver, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { FormField } from "@/components/molecules/form-field";
+import { NumericInput } from "@/components/molecules/numeric-input";
 import { formatDateInput } from "@/shared/helpers/format";
 import type { VehicleOption } from "@/shared/types/vehicle";
 import { formatVehicleLabel } from "@/shared/helpers/vehicle";
@@ -45,6 +46,7 @@ export function FuelForm({ vehicles, initialData, onSuccess }: FuelFormProps) {
 
   const {
     register,
+    control,
     handleSubmit,
     watch,
     setValue,
@@ -131,21 +133,45 @@ export function FuelForm({ vehicles, initialData, onSuccess }: FuelFormProps) {
       </FormField>
 
       <FormField label="Odómetro (km)" error={errors.odometerKm?.message}>
-        <Input type="number" min={0} step={0.1} {...register("odometerKm")} />
+        <Controller
+          name="odometerKm"
+          control={control}
+          render={({ field }) => (
+            <NumericInput value={field.value} onChange={field.onChange} decimals={1} min={0} />
+          )}
+        />
       </FormField>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <FormField label="Litros" error={errors.liters?.message}>
-          <Input type="number" min={0} step={0.01} {...register("liters")} />
+          <Controller
+            name="liters"
+            control={control}
+            render={({ field }) => (
+              <NumericInput value={field.value} onChange={field.onChange} decimals={2} min={0} />
+            )}
+          />
         </FormField>
 
         <FormField label="Precio por litro" error={errors.pricePerLiter?.message}>
-          <Input type="number" min={0} step={0.01} {...register("pricePerLiter")} />
+          <Controller
+            name="pricePerLiter"
+            control={control}
+            render={({ field }) => (
+              <NumericInput value={field.value} onChange={field.onChange} decimals={2} min={0} prefix="$ " />
+            )}
+          />
         </FormField>
       </div>
 
       <FormField label="Monto total" error={errors.totalAmount?.message}>
-        <Input type="number" min={0} step={0.01} {...register("totalAmount")} />
+        <Controller
+          name="totalAmount"
+          control={control}
+          render={({ field }) => (
+            <NumericInput value={field.value} onChange={field.onChange} decimals={2} min={0} prefix="$ " />
+          )}
+        />
       </FormField>
 
       <label className="flex items-center gap-2 text-sm">

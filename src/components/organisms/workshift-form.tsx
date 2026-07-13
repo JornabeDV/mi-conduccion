@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
-import { useForm, useFieldArray, type Resolver } from "react-hook-form";
+import { useForm, useFieldArray, type Resolver, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { FormField } from "@/components/molecules/form-field";
+import { NumericInput } from "@/components/molecules/numeric-input";
 import { formatDateInput, formatDateTimeInput } from "@/shared/helpers/format";
 import { INCOME_TYPES, INCOME_TYPE_LABELS, type IncomeType } from "@/shared/constants/income-types";
 import { PLATFORMS, PLATFORM_LABELS, type Platform } from "@/shared/constants/platforms";
@@ -150,7 +151,13 @@ export function WorkShiftForm({ vehicles, initialData, onSuccess }: WorkShiftFor
         </FormField>
 
         <FormField label="Viajes" error={errors.totalTrips?.message}>
-          <Input type="number" min={0} {...register("totalTrips")} />
+          <Controller
+            name="totalTrips"
+            control={control}
+            render={({ field }) => (
+              <NumericInput value={field.value} onChange={field.onChange} decimals={0} min={0} />
+            )}
+          />
         </FormField>
       </div>
 
@@ -166,11 +173,23 @@ export function WorkShiftForm({ vehicles, initialData, onSuccess }: WorkShiftFor
 
       <div className="grid gap-4 sm:grid-cols-2">
         <FormField label="Horas en línea" error={errors.onlineHours?.message}>
-          <Input type="number" min={0} step={0.1} {...register("onlineHours")} />
+          <Controller
+            name="onlineHours"
+            control={control}
+            render={({ field }) => (
+              <NumericInput value={field.value} onChange={field.onChange} decimals={1} min={0} />
+            )}
+          />
         </FormField>
 
         <FormField label="Distancia (km)" error={errors.distanceKm?.message}>
-          <Input type="number" min={0} step={0.1} {...register("distanceKm")} />
+          <Controller
+            name="distanceKm"
+            control={control}
+            render={({ field }) => (
+              <NumericInput value={field.value} onChange={field.onChange} decimals={1} min={0} />
+            )}
+          />
         </FormField>
       </div>
 
@@ -239,7 +258,13 @@ export function WorkShiftForm({ vehicles, initialData, onSuccess }: WorkShiftFor
               )}
 
               <div className={type === "PLATFORM" ? "sm:col-span-3" : "sm:col-span-6"}>
-                <Input type="number" min={0} step={0.01} placeholder="Monto" {...register(`incomes.${index}.amount`)} />
+                <Controller
+                  name={`incomes.${index}.amount`}
+                  control={control}
+                  render={({ field }) => (
+                    <NumericInput value={field.value} onChange={field.onChange} decimals={2} min={0} prefix="$ " placeholder="Monto" />
+                  )}
+                />
               </div>
 
               <div className="sm:col-span-2">

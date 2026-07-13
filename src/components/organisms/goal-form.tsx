@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
-import { useForm, type Resolver } from "react-hook-form";
+import { useForm, type Resolver, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { FormField } from "@/components/molecules/form-field";
+import { NumericInput } from "@/components/molecules/numeric-input";
 import { formatDateInput } from "@/shared/helpers/format";
 import { GOAL_PERIODS, GOAL_PERIOD_LABELS, type GoalPeriod } from "@/shared/constants/goal-periods";
 
@@ -40,6 +41,7 @@ export function GoalForm({ initialData, onSuccess }: GoalFormProps) {
 
   const {
     register,
+    control,
     handleSubmit,
     watch,
     setValue,
@@ -102,7 +104,13 @@ export function GoalForm({ initialData, onSuccess }: GoalFormProps) {
       </FormField>
 
       <FormField label="Objetivo de ingresos" error={errors.targetAmount?.message}>
-        <Input type="number" min={0} step={0.01} {...register("targetAmount")} />
+        <Controller
+          name="targetAmount"
+          control={control}
+          render={({ field }) => (
+            <NumericInput value={field.value} onChange={field.onChange} decimals={2} min={0} prefix="$ " />
+          )}
+        />
       </FormField>
 
       <div className="grid gap-4 sm:grid-cols-2">

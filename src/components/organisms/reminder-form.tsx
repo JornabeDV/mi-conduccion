@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
-import { useForm, type Resolver } from "react-hook-form";
+import { useForm, type Resolver, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { FormField } from "@/components/molecules/form-field";
+import { NumericInput } from "@/components/molecules/numeric-input";
 import { formatDateInput } from "@/shared/helpers/format";
 import { REMINDER_TYPES, REMINDER_TYPE_LABELS, type ReminderType } from "@/shared/constants/reminder-types";
 import { REMINDER_ENTITIES, REMINDER_ENTITY_LABELS, type ReminderEntity } from "@/shared/constants/reminder-entities";
@@ -46,6 +47,7 @@ export function ReminderForm({ vehicles, initialData, onSuccess }: ReminderFormP
 
   const {
     register,
+    control,
     handleSubmit,
     watch,
     setValue,
@@ -165,7 +167,13 @@ export function ReminderForm({ vehicles, initialData, onSuccess }: ReminderFormP
         </FormField>
       ) : (
         <FormField label="Odómetro de vencimiento" error={errors.dueOdometer?.message}>
-          <Input type="number" min={0} step={0.1} {...register("dueOdometer")} />
+          <Controller
+            name="dueOdometer"
+            control={control}
+            render={({ field }) => (
+              <NumericInput value={field.value} onChange={field.onChange} decimals={1} min={0} />
+            )}
+          />
         </FormField>
       )}
 

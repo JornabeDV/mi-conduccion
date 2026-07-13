@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils";
 import { type FormatNumberOptions } from "@/shared/helpers/number-format";
 
 type NumericInputProps = Omit<
-  React.ComponentProps<"input">,
-  "value" | "onChange" | "type" | "ref"
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "value" | "onChange" | "type" | "ref" | "defaultValue"
 > &
   FormatNumberOptions & {
     value?: number | null;

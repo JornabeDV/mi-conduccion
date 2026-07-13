@@ -122,7 +122,7 @@ export function ExpenseForm({ vehicles, initialData, onSuccess }: ExpenseFormPro
           }
         >
           <SelectTrigger className="w-full">
-            <SelectValue />
+            <SelectValue>{EXPENSE_CATEGORY_LABELS[watch("category")]}</SelectValue>
           </SelectTrigger>
           <SelectContent>
             {EXPENSE_CATEGORIES.map((category) => (
