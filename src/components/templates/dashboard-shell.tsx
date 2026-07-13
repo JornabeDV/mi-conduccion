@@ -72,7 +72,7 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
         </main>
 
         {/* Mobile bottom nav */}
-        <BottomNav onOpenMenu={() => setMobileMenuOpen(true)} />
+        <BottomNav />
         <MobileMenu open={mobileMenuOpen} onOpenChange={setMobileMenuOpen} />
       </div>
     </div>
