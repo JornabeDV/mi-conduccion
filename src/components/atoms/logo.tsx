@@ -8,7 +8,8 @@ type LogoProps = {
   className?: string;
 };
 
-const LOGO_SRC = "/logo_mi_conduccion_sin_fondo.png";
+const LOGO_LIGHT = "/logo_mi_conduccion_completo_sin_fondo.png";
+const LOGO_DARK = "/logo_mi_conduccion_completo_negro_sin_fondo.png";
 
 export function Logo({
   href = "/dashboard",
@@ -20,16 +21,36 @@ export function Logo({
     <Link
       href={href}
       className={cn(
-        "flex items-center gap-2 font-semibold tracking-tight",
+        "flex items-center justify-center gap-2 font-semibold tracking-tight",
         className
       )}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={LOGO_SRC}
-        alt="Mi Conducción"
-        className={cn("h-7 w-7 object-contain", imageClassName)}
-      />
+      <span
+        className={cn(
+          "relative block overflow-hidden dark:hidden",
+          imageClassName
+        )}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={LOGO_LIGHT}
+          alt="Mi Conducción"
+          className="h-full w-full object-contain"
+        />
+      </span>
+      <span
+        className={cn(
+          "relative hidden overflow-hidden dark:block",
+          imageClassName
+        )}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={LOGO_DARK}
+          alt="Mi Conducción"
+          className="h-full w-full object-contain"
+        />
+      </span>
       {showText && <span>Mi Conducción</span>}
     </Link>
   );

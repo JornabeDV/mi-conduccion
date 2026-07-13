@@ -1,16 +1,14 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/server/services/session-service";
 import { goalService } from "@/server/services/goal-service";
 import { deleteGoal } from "@/server/actions/goal-actions";
-import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { DeleteRowButton } from "@/components/molecules/delete-row-button";
 import { formatCurrency, formatDate } from "@/shared/helpers/format";
 import { GOAL_PERIOD_LABELS } from "@/shared/constants/goal-periods";
 import { Plus, Pencil } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ButtonLink } from "@/components/molecules/button-link";
 
 export default async function ObjetivosPage() {
   const session = await getSession().catch(() => null);
@@ -25,10 +23,10 @@ export default async function ObjetivosPage() {
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Objetivos</h1>
           <p className="text-sm text-muted-foreground">Seguimiento de metas de ingresos</p>
         </div>
-        <Link href="/objetivos/nuevo" className={cn(buttonVariants(), "w-full sm:w-auto")}>
+        <ButtonLink href="/objetivos/nuevo" className="w-full sm:w-auto">
           <Plus className="mr-1 size-4" />
           Nuevo objetivo
-        </Link>
+        </ButtonLink>
       </div>
 
       {goals.length === 0 ? (
@@ -51,9 +49,9 @@ export default async function ObjetivosPage() {
                     </p>
                   </div>
                   <div className="flex gap-1">
-                    <Link href={`/objetivos/${goal.id}/editar`} className={buttonVariants({ variant: "ghost", size: "icon-sm" })}>
+                    <ButtonLink href={`/objetivos/${goal.id}/editar`} variant="ghost" size="icon-sm">
                       <Pencil className="size-4" />
-                    </Link>
+                    </ButtonLink>
                     <DeleteRowButton action={deleteGoal} id={goal.id} />
                   </div>
                 </div>

@@ -26,6 +26,7 @@ import { formatDateInput, formatDateTimeInput } from "@/shared/helpers/format";
 import { INCOME_TYPES, INCOME_TYPE_LABELS, type IncomeType } from "@/shared/constants/income-types";
 import { PLATFORMS, PLATFORM_LABELS, type Platform } from "@/shared/constants/platforms";
 import type { VehicleOption } from "@/shared/types/vehicle";
+import { formatVehicleLabel } from "@/shared/helpers/vehicle";
 
 type WorkShiftWithIncomes = {
   id: string;
@@ -116,6 +117,7 @@ export function WorkShiftForm({ vehicles, initialData, onSuccess }: WorkShiftFor
   };
 
   const selectedVehicleId = watch("vehicleId");
+  const selectedVehicle = vehicles.find((v) => v.id === selectedVehicleId);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -125,7 +127,11 @@ export function WorkShiftForm({ vehicles, initialData, onSuccess }: WorkShiftFor
           onValueChange={(value) => setValue("vehicleId", value || null, { shouldValidate: true })}
         >
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Seleccionar vehículo" />
+            <SelectValue placeholder="Seleccionar vehículo">
+              {selectedVehicle
+                ? formatVehicleLabel(selectedVehicle)
+                : selectedVehicleId || "Sin vehículo"}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="">Sin vehículo</SelectItem>

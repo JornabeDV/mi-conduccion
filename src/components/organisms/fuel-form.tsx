@@ -19,6 +19,7 @@ import {
 import { FormField } from "@/components/molecules/form-field";
 import { formatDateInput } from "@/shared/helpers/format";
 import type { VehicleOption } from "@/shared/types/vehicle";
+import { formatVehicleLabel } from "@/shared/helpers/vehicle";
 
 type FuelFormInitialData = {
   id: string;
@@ -75,6 +76,8 @@ export function FuelForm({ vehicles, initialData, onSuccess }: FuelFormProps) {
 
   const liters = watch("liters");
   const pricePerLiter = watch("pricePerLiter");
+  const selectedVehicleId = watch("vehicleId");
+  const selectedVehicle = vehicles.find((v) => v.id === selectedVehicleId);
 
   useEffect(() => {
     if (liters && pricePerLiter) {
@@ -109,7 +112,9 @@ export function FuelForm({ vehicles, initialData, onSuccess }: FuelFormProps) {
           onValueChange={(value) => setValue("vehicleId", value ?? "", { shouldValidate: true })}
         >
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Seleccionar vehículo" />
+            <SelectValue placeholder="Seleccionar vehículo">
+              {selectedVehicle ? formatVehicleLabel(selectedVehicle) : "Seleccionar vehículo"}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             {vehicles.map((vehicle) => (

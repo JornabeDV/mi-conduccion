@@ -21,9 +21,7 @@ export const metadata: Metadata = {
   },
   description:
     "ERP personal para conductores de plataformas de transporte. Controlá tus jornadas, gastos, combustible y objetivos.",
-  icons: {
-    icon: "/logo_mi_conduccion_sin_fondo.png",
-  },
+  manifest: "/manifest.json",
 };
 
 export const viewport: Viewport = {

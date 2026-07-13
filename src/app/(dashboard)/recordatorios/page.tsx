@@ -1,10 +1,8 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/server/services/session-service";
 import { reminderService } from "@/server/services/reminder-service";
 import { vehicleRepository } from "@/server/repositories/vehicle-repository";
 import { deleteReminder } from "@/server/actions/reminder-actions";
-import { buttonVariants } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -19,7 +17,7 @@ import { formatDate, formatNumber } from "@/shared/helpers/format";
 import { REMINDER_TYPE_LABELS } from "@/shared/constants/reminder-types";
 import { REMINDER_ENTITY_LABELS } from "@/shared/constants/reminder-entities";
 import { Plus, Pencil } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ButtonLink } from "@/components/molecules/button-link";
 
 export default async function RecordatoriosPage() {
   const session = await getSession().catch(() => null);
@@ -39,10 +37,10 @@ export default async function RecordatoriosPage() {
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Recordatorios</h1>
           <p className="text-sm text-muted-foreground">Mantenimiento y vencimientos</p>
         </div>
-        <Link href="/recordatorios/nuevo" className={cn(buttonVariants(), "w-full sm:w-auto")}>
+        <ButtonLink href="/recordatorios/nuevo" className="w-full sm:w-auto">
           <Plus className="mr-1 size-4" />
           Nuevo recordatorio
-        </Link>
+        </ButtonLink>
       </div>
 
       {reminders.length === 0 ? (
@@ -81,9 +79,9 @@ export default async function RecordatoriosPage() {
                     <TableCell className="text-right">
                       <div className="inline-flex justify-end gap-1">
                         {!reminder.isCompleted && <CompleteReminderButton id={reminder.id} />}
-                        <Link href={`/recordatorios/${reminder.id}/editar`} className={buttonVariants({ variant: "ghost", size: "icon-sm" })}>
+                        <ButtonLink href={`/recordatorios/${reminder.id}/editar`} variant="ghost" size="icon-sm">
                           <Pencil className="size-4" />
-                        </Link>
+                        </ButtonLink>
                         <DeleteRowButton action={deleteReminder} id={reminder.id} />
                       </div>
                     </TableCell>

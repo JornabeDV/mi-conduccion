@@ -1,10 +1,8 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/server/services/session-service";
 import { expenseService } from "@/server/services/expense-service";
 import { vehicleRepository } from "@/server/repositories/vehicle-repository";
 import { deleteExpense } from "@/server/actions/expense-actions";
-import { buttonVariants } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -17,7 +15,7 @@ import { DeleteRowButton } from "@/components/molecules/delete-row-button";
 import { formatCurrency, formatDate } from "@/shared/helpers/format";
 import { EXPENSE_CATEGORY_LABELS } from "@/shared/constants/expense-categories";
 import { Plus, Pencil } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ButtonLink } from "@/components/molecules/button-link";
 
 export default async function GastosPage() {
   const session = await getSession().catch(() => null);
@@ -37,10 +35,10 @@ export default async function GastosPage() {
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Gastos</h1>
           <p className="text-sm text-muted-foreground">Control de todos tus gastos</p>
         </div>
-        <Link href="/gastos/nuevo" className={cn(buttonVariants(), "w-full sm:w-auto")}>
+        <ButtonLink href="/gastos/nuevo" className="w-full sm:w-auto">
           <Plus className="mr-1 size-4" />
           Nuevo gasto
-        </Link>
+        </ButtonLink>
       </div>
 
       {expenses.length === 0 ? (
@@ -72,9 +70,9 @@ export default async function GastosPage() {
                     <TableCell>{formatCurrency(Number(expense.amount))}</TableCell>
                     <TableCell className="text-right">
                       <div className="inline-flex justify-end gap-1">
-                        <Link href={`/gastos/${expense.id}/editar`} className={buttonVariants({ variant: "ghost", size: "icon-sm" })}>
+                        <ButtonLink href={`/gastos/${expense.id}/editar`} variant="ghost" size="icon-sm">
                           <Pencil className="size-4" />
-                        </Link>
+                        </ButtonLink>
                         <DeleteRowButton action={deleteExpense} id={expense.id} />
                       </div>
                     </TableCell>

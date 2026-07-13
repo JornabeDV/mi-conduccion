@@ -1,9 +1,8 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/server/services/session-service";
 import { calendarService } from "@/server/services/calendar-service";
 import { Card, CardContent } from "@/components/ui/card";
-import { buttonVariants } from "@/components/ui/button";
+import { ButtonLink } from "@/components/molecules/button-link";
 import { formatCurrency } from "@/shared/helpers/format";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -43,19 +42,21 @@ export default async function CalendarioPage({
           <p className="text-sm text-muted-foreground">Resumen día a día</p>
         </div>
         <div className="flex items-center gap-2">
-          <Link
+          <ButtonLink
             href={`/calendario?year=${prev.getFullYear()}&month=${prev.getMonth() + 1}`}
-            className={buttonVariants({ variant: "outline", size: "icon-sm" })}
+            variant="outline"
+            size="icon-sm"
           >
             <ChevronLeft className="size-4" />
-          </Link>
+          </ButtonLink>
           <span className="min-w-[140px] text-center text-sm font-medium capitalize">{monthLabel}</span>
-          <Link
+          <ButtonLink
             href={`/calendario?year=${next.getFullYear()}&month=${next.getMonth() + 1}`}
-            className={buttonVariants({ variant: "outline", size: "icon-sm" })}
+            variant="outline"
+            size="icon-sm"
           >
             <ChevronRight className="size-4" />
-          </Link>
+          </ButtonLink>
         </div>
       </div>
 

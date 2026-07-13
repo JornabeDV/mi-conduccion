@@ -1,9 +1,7 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/server/services/session-service";
 import { vehicleService } from "@/server/services/vehicle-service";
 import { deleteVehicle } from "@/server/actions/vehicle-actions";
-import { buttonVariants } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -16,7 +14,7 @@ import { DeleteRowButton } from "@/components/molecules/delete-row-button";
 import { formatNumber } from "@/shared/helpers/format";
 import { FUEL_TYPE_LABELS } from "@/shared/constants/fuel-types";
 import { Plus, Pencil } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ButtonLink } from "@/components/molecules/button-link";
 
 export default async function VehiculosPage() {
   const session = await getSession().catch(() => null);
@@ -31,10 +29,10 @@ export default async function VehiculosPage() {
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Vehículos</h1>
           <p className="text-sm text-muted-foreground">Gestión de tus vehículos</p>
         </div>
-        <Link href="/vehiculo/nuevo" className={cn(buttonVariants(), "w-full sm:w-auto")}>
+        <ButtonLink href="/vehiculo/nuevo" className="w-full sm:w-auto">
           <Plus className="mr-1 size-4" />
           Nuevo vehículo
-        </Link>
+        </ButtonLink>
       </div>
 
       {vehicles.length === 0 ? (
@@ -68,9 +66,9 @@ export default async function VehiculosPage() {
                   <TableCell>{vehicle.isActive ? "Activo" : "Inactivo"}</TableCell>
                   <TableCell className="text-right">
                     <div className="inline-flex justify-end gap-1">
-                      <Link href={`/vehiculo/${vehicle.id}/editar`} className={buttonVariants({ variant: "ghost", size: "icon-sm" })}>
+                      <ButtonLink href={`/vehiculo/${vehicle.id}/editar`} variant="ghost" size="icon-sm">
                         <Pencil className="size-4" />
-                      </Link>
+                      </ButtonLink>
                       <DeleteRowButton action={deleteVehicle} id={vehicle.id} />
                     </div>
                   </TableCell>

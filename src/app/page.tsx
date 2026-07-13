@@ -15,11 +15,8 @@ export default async function HomePage() {
     <main className="flex flex-1 flex-col items-center justify-center px-6 py-24 text-center">
       <div className="max-w-2xl space-y-8">
         <div className="flex flex-col items-center gap-4">
-          <Logo href="/" showText={false} imageClassName="h-20 w-20" />
+          <Logo href="/" showText={false} imageClassName="h-64 w-64" />
           <div className="space-y-4">
-            <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
-              Mi Conducción
-            </h1>
             <p className="text-lg text-muted-foreground sm:text-xl">
               El ERP personal para conductores de plataformas de transporte.
               Llevá el control de tus jornadas, gastos, combustible y objetivos

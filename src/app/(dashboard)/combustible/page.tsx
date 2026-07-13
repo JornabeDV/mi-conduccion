@@ -1,10 +1,8 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/server/services/session-service";
 import { fuelService } from "@/server/services/fuel-service";
 import { vehicleRepository } from "@/server/repositories/vehicle-repository";
 import { deleteFuel } from "@/server/actions/fuel-actions";
-import { buttonVariants } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -16,7 +14,7 @@ import {
 import { DeleteRowButton } from "@/components/molecules/delete-row-button";
 import { formatCurrency, formatDate, formatNumber } from "@/shared/helpers/format";
 import { Plus, Pencil } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ButtonLink } from "@/components/molecules/button-link";
 
 export default async function CombustiblePage() {
   const session = await getSession().catch(() => null);
@@ -36,10 +34,10 @@ export default async function CombustiblePage() {
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Combustible</h1>
           <p className="text-sm text-muted-foreground">Seguimiento de cargas y rendimiento</p>
         </div>
-        <Link href="/combustible/nuevo" className={cn(buttonVariants(), "w-full sm:w-auto")}>
+        <ButtonLink href="/combustible/nuevo" className="w-full sm:w-auto">
           <Plus className="mr-1 size-4" />
           Nueva carga
-        </Link>
+        </ButtonLink>
       </div>
 
       {logs.length === 0 ? (
@@ -75,9 +73,9 @@ export default async function CombustiblePage() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="inline-flex justify-end gap-1">
-                        <Link href={`/combustible/${log.id}/editar`} className={buttonVariants({ variant: "ghost", size: "icon-sm" })}>
+                        <ButtonLink href={`/combustible/${log.id}/editar`} variant="ghost" size="icon-sm">
                           <Pencil className="size-4" />
-                        </Link>
+                        </ButtonLink>
                         <DeleteRowButton action={deleteFuel} id={log.id} />
                       </div>
                     </TableCell>

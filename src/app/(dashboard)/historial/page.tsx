@@ -1,9 +1,9 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/server/services/session-service";
 import { historyService } from "@/server/services/history-service";
 import { vehicleRepository } from "@/server/repositories/vehicle-repository";
-import { buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/molecules/button-link";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -99,12 +99,12 @@ export default async function HistorialPage({
           </div>
         </div>
         <div className="flex gap-2">
-          <button type="submit" className={cn(buttonVariants(), "w-full sm:w-auto")}>
+          <Button type="submit" className="w-full sm:w-auto">
             Filtrar
-          </button>
-          <Link href="/historial" className={cn(buttonVariants({ variant: "outline" }), "w-full sm:w-auto")}>
+          </Button>
+          <ButtonLink href="/historial" variant="outline" className="w-full sm:w-auto">
             Limpiar
-          </Link>
+          </ButtonLink>
         </div>
       </form>
 

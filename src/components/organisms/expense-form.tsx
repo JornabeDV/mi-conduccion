@@ -20,6 +20,7 @@ import { FormField } from "@/components/molecules/form-field";
 import { formatDateInput } from "@/shared/helpers/format";
 import { EXPENSE_CATEGORIES, EXPENSE_CATEGORY_LABELS } from "@/shared/constants/expense-categories";
 import type { VehicleOption } from "@/shared/types/vehicle";
+import { formatVehicleLabel } from "@/shared/helpers/vehicle";
 
 type ExpenseFormInitialData = {
   id: string;
@@ -65,6 +66,9 @@ export function ExpenseForm({ vehicles, initialData, onSuccess }: ExpenseFormPro
         },
   });
 
+  const selectedVehicleId = watch("vehicleId") ?? "";
+  const selectedVehicle = vehicles.find((v) => v.id === selectedVehicleId);
+
   const onSubmit = (values: ExpenseCreateInput) => {
     startTransition(async () => {
       const result = initialData
@@ -91,7 +95,11 @@ export function ExpenseForm({ vehicles, initialData, onSuccess }: ExpenseFormPro
           onValueChange={(value) => setValue("vehicleId", value || null, { shouldValidate: true })}
         >
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Seleccionar vehículo" />
+            <SelectValue placeholder="Seleccionar vehículo">
+              {selectedVehicle
+                ? formatVehicleLabel(selectedVehicle)
+                : selectedVehicleId || "Sin vehículo"}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="">Sin vehículo</SelectItem>

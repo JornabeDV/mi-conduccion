@@ -3,11 +3,15 @@
 import { MAIN_NAV } from "@/shared/constants/nav";
 import { NavItemButton } from "@/components/atoms/nav-item";
 
-export function SidebarNav() {
+type SidebarNavProps = {
+  onItemClick?: () => void;
+};
+
+export function SidebarNav({ onItemClick }: SidebarNavProps) {
   return (
     <nav className="flex flex-col gap-1 px-3">
       {MAIN_NAV.map((item) => (
-        <NavItemButton key={item.href} {...item} />
+        <NavItemButton key={item.href} {...item} onClick={onItemClick} />
       ))}
     </nav>
   );

@@ -22,11 +22,11 @@ export function MobileMenu({ open, onOpenChange }: MobileMenuProps) {
       <SheetContent side="left" className="w-[280px] p-0">
         <SheetHeader className="px-5 pb-2 pt-5 text-left">
           <SheetTitle className="sr-only">Menú de navegación</SheetTitle>
-          <Logo />
+          <Logo showText={false} imageClassName="h-32 w-32" />
         </SheetHeader>
         <Separator />
         <div className="flex flex-1 flex-col gap-4 overflow-auto py-4">
-          <SidebarNav />
+          <SidebarNav onItemClick={() => onOpenChange(false)} />
         </div>
         <Separator />
         <div className="flex items-center justify-between px-5 py-4">

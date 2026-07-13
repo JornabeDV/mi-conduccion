@@ -21,6 +21,7 @@ import { formatDateInput } from "@/shared/helpers/format";
 import { REMINDER_TYPES, REMINDER_TYPE_LABELS, type ReminderType } from "@/shared/constants/reminder-types";
 import { REMINDER_ENTITIES, REMINDER_ENTITY_LABELS, type ReminderEntity } from "@/shared/constants/reminder-entities";
 import type { VehicleOption } from "@/shared/types/vehicle";
+import { formatVehicleLabel } from "@/shared/helpers/vehicle";
 
 type ReminderFormInitialData = {
   id: string;
@@ -91,6 +92,8 @@ export function ReminderForm({ vehicles, initialData, onSuccess }: ReminderFormP
   };
 
   const type = watch("type");
+  const selectedVehicleId = watch("vehicleId");
+  const selectedVehicle = vehicles.find((v) => v.id === selectedVehicleId);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -100,7 +103,9 @@ export function ReminderForm({ vehicles, initialData, onSuccess }: ReminderFormP
           onValueChange={(value) => setValue("vehicleId", value ?? "", { shouldValidate: true })}
         >
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Seleccionar vehículo" />
+            <SelectValue placeholder="Seleccionar vehículo">
+              {selectedVehicle ? formatVehicleLabel(selectedVehicle) : "Seleccionar vehículo"}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             {vehicles.map((vehicle) => (
