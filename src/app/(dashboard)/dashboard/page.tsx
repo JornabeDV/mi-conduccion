@@ -55,7 +55,7 @@ export default async function DashboardPage({
 
       <DashboardCharts
         incomeTrend={data.incomeTrend}
-        monthlyProfit={data.monthlyProfit}
+        profitTrend={data.profitTrend}
         expenseDistribution={data.expenseDistribution}
         period={data.period}
       />

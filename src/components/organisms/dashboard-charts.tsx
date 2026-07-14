@@ -20,13 +20,13 @@ import { EXPENSE_CATEGORY_LABELS } from "@/shared/constants/expense-categories";
 import type {
   DailyDataPoint,
   ExpenseDistributionDataPoint,
-  MonthlyProfitDataPoint,
+  ProfitTrendDataPoint,
   DashboardPeriod,
 } from "@/server/dto/dashboard";
 
 type DashboardChartsProps = {
   incomeTrend: DailyDataPoint[];
-  monthlyProfit: MonthlyProfitDataPoint[];
+  profitTrend: ProfitTrendDataPoint[];
   expenseDistribution: ExpenseDistributionDataPoint[];
   period: DashboardPeriod;
 };
@@ -43,18 +43,39 @@ const COLORS = [
   "hsl(var(--destructive))",
 ];
 
-const TREND_TITLES: Record<DashboardPeriod, { title: string; description: string }> = {
+const TREND_TITLES: Record<
+  DashboardPeriod,
+  { income: { title: string; description: string }; profit: { title: string; description: string } }
+> = {
   day: {
-    title: "Ingresos últimos 7 días",
-    description: "Contexto de la última semana.",
+    income: {
+      title: "Ingresos últimos 7 días",
+      description: "Contexto de la última semana.",
+    },
+    profit: {
+      title: "Ganancia últimos 7 días",
+      description: "Ingresos vs gastos por día.",
+    },
   },
   week: {
-    title: "Ingresos de la semana",
-    description: "Suma diaria de ingresos.",
+    income: {
+      title: "Ingresos de la semana",
+      description: "Suma diaria de ingresos.",
+    },
+    profit: {
+      title: "Ganancia de la semana",
+      description: "Ingresos vs gastos por día.",
+    },
   },
   month: {
-    title: "Ingresos del mes",
-    description: "Tendencia diaria de ingresos.",
+    income: {
+      title: "Ingresos del mes",
+      description: "Tendencia diaria de ingresos.",
+    },
+    profit: {
+      title: "Ganancia del mes",
+      description: "Ingresos vs gastos por día.",
+    },
   },
 };
 
@@ -82,15 +103,15 @@ function CurrencyTooltip({
 
 export function DashboardCharts({
   incomeTrend,
-  monthlyProfit,
+  profitTrend,
   expenseDistribution,
   period,
 }: DashboardChartsProps) {
-  const trend = TREND_TITLES[period];
+  const titles = TREND_TITLES[period];
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
-      <ChartCard title={trend.title} description={trend.description}>
+      <ChartCard title={titles.income.title} description={titles.income.description}>
         <ResponsiveContainer width="100%" height={240}>
           <BarChart data={incomeTrend}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -112,9 +133,9 @@ export function DashboardCharts({
         </ResponsiveContainer>
       </ChartCard>
 
-      <ChartCard title="Ganancia mensual" description="Ingresos vs gastos por mes.">
+      <ChartCard title={titles.profit.title} description={titles.profit.description}>
         <ResponsiveContainer width="100%" height={240}>
-          <BarChart data={monthlyProfit}>
+          <BarChart data={profitTrend}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis
               dataKey="label"

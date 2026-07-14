@@ -25,8 +25,7 @@ export type DailyDataPoint = {
   income: number;
 };
 
-export type MonthlyProfitDataPoint = {
-  month: string;
+export type ProfitTrendDataPoint = {
   label: string;
   income: number;
   expenses: number;
@@ -45,6 +44,6 @@ export type DashboardDto = {
   stats: DashboardPeriodStats;
   goal: DashboardGoal;
   incomeTrend: DailyDataPoint[];
-  monthlyProfit: MonthlyProfitDataPoint[];
+  profitTrend: ProfitTrendDataPoint[];
   expenseDistribution: ExpenseDistributionDataPoint[];
 };

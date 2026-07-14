@@ -1,11 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import type { Prisma } from "@prisma/client";
-
-const driverProfileInclude = {} satisfies Prisma.DriverProfileInclude;
-
-export type DriverProfileWithRelations = Prisma.DriverProfileGetPayload<{
-  include: typeof driverProfileInclude;
-}>;
+import type { DriverProfile } from "@prisma/client";
 
 export type UpdateDriverProfileInput = {
   preferredCurrency?: string;
@@ -17,20 +11,19 @@ export type UpdateDriverProfileInput = {
 };
 
 export interface DriverProfileRepository {
-  findByUser(userId: string): Promise<DriverProfileWithRelations | null>;
-  update(userId: string, input: UpdateDriverProfileInput): Promise<DriverProfileWithRelations>;
-  upsert(userId: string, input: UpdateDriverProfileInput): Promise<DriverProfileWithRelations>;
+  findByUser(userId: string): Promise<DriverProfile | null>;
+  update(userId: string, input: UpdateDriverProfileInput): Promise<DriverProfile>;
+  upsert(userId: string, input: UpdateDriverProfileInput): Promise<DriverProfile>;
 }
 
 export class PrismaDriverProfileRepository implements DriverProfileRepository {
-  async findByUser(userId: string): Promise<DriverProfileWithRelations | null> {
+  async findByUser(userId: string): Promise<DriverProfile | null> {
     return prisma.driverProfile.findUnique({
       where: { userId },
-      include: driverProfileInclude,
     });
   }
 
-  async update(userId: string, input: UpdateDriverProfileInput): Promise<DriverProfileWithRelations> {
+  async update(userId: string, input: UpdateDriverProfileInput): Promise<DriverProfile> {
     return prisma.driverProfile.update({
       where: { userId },
       data: {
@@ -41,11 +34,10 @@ export class PrismaDriverProfileRepository implements DriverProfileRepository {
         walletIdentifier: input.walletIdentifier !== undefined ? input.walletIdentifier ?? null : undefined,
         walletAccountOwner: input.walletAccountOwner !== undefined ? input.walletAccountOwner ?? null : undefined,
       },
-      include: driverProfileInclude,
     });
   }
 
-  async upsert(userId: string, input: UpdateDriverProfileInput): Promise<DriverProfileWithRelations> {
+  async upsert(userId: string, input: UpdateDriverProfileInput): Promise<DriverProfile> {
     const existing = await this.findByUser(userId);
     if (existing) {
       return this.update(userId, input);
@@ -60,7 +52,6 @@ export class PrismaDriverProfileRepository implements DriverProfileRepository {
         walletIdentifier: input.walletIdentifier ?? null,
         walletAccountOwner: input.walletAccountOwner ?? null,
       },
-      include: driverProfileInclude,
     });
   }
 }
