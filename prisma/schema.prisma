@@ -25,6 +25,7 @@ model User {
   driverProfile DriverProfile?
   vehicles      Vehicle[]
   workShifts    WorkShift[]
+  cashCounts    CashCount[]
   expenses      Expense[]
   fuelLogs      FuelLog[]
   reminders     Reminder[]
@@ -85,13 +86,16 @@ model Verification {
 // Perfil del conductor
 // =========================================================
 model DriverProfile {
-  id                String   @id @default(uuid())
-  userId            String   @unique
-  preferredCurrency String   @default("ARS") @map("preferred_currency")
-  timezone          String   @default("America/Argentina/Buenos_Aires")
-  defaultVehicleId  String?  @map("default_vehicle_id")
-  createdAt         DateTime @default(now()) @map("created_at")
-  updatedAt         DateTime @updatedAt @map("updated_at")
+  id                 String   @id @default(uuid())
+  userId             String   @unique
+  preferredCurrency  String   @default("ARS") @map("preferred_currency")
+  timezone           String   @default("America/Argentina/Buenos_Aires")
+  defaultVehicleId   String?  @map("default_vehicle_id")
+  walletProvider     String?  @map("wallet_provider")
+  walletIdentifier   String?  @map("wallet_identifier")
+  walletAccountOwner String?  @map("wallet_account_owner")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -162,6 +166,11 @@ enum GoalPeriod {
   MONTHLY
 }
 
+enum CashCountType {
+  OPEN
+  CLOSE
+}
+
 enum ImportStatus {
   PENDING
   PROCESSING
@@ -210,10 +219,11 @@ model WorkShift {
   updatedAt   DateTime  @updatedAt @map("updated_at")
   deletedAt   DateTime? @map("deleted_at")
 
-  user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  vehicle  Vehicle?      @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
-  incomes  ShiftIncome[]
-  expenses Expense[]
+  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vehicle    Vehicle?      @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+  incomes    ShiftIncome[]
+  cashCounts CashCount[]
+  expenses   Expense[]
 
   @@index([userId, date])
   @@index([vehicleId])
@@ -315,6 +325,32 @@ model Reminder {
   @@index([userId, vehicleId])
   @@index([dueDate])
   @@map("reminders")
+}
+
+model CashCount {
+  id             String        @id @default(uuid())
+  userId         String
+  shiftId        String        @map("shift_id")
+  type           CashCountType
+  date           DateTime      @db.Date
+  denominations  Json
+  totalAmount    Decimal       @map("total_amount") @db.Decimal(12, 2)
+  transferAmount Decimal?      @map("transfer_amount") @db.Decimal(12, 2)
+  appAmount      Decimal?      @map("app_amount") @db.Decimal(12, 2)
+  extraAmount    Decimal?      @map("extra_amount") @db.Decimal(12, 2)
+  notes          String?
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+  deletedAt      DateTime?     @map("deleted_at")
+
+  user  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shift WorkShift @relation(fields: [shiftId], references: [id], onDelete: Cascade)
+
+  @@unique([shiftId, type])
+  @@index([userId, date])
+  @@index([shiftId])
+  @@index([deletedAt])
+  @@map("cash_counts")
 }
 
 model Goal {

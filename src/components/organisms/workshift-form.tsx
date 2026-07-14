@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useEffect, useTransition } from "react";
 import { useForm, useFieldArray, type Resolver, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -23,7 +23,8 @@ import {
 } from "@/components/ui/select";
 import { FormField } from "@/components/molecules/form-field";
 import { NumericInput } from "@/components/molecules/numeric-input";
-import { formatDateInput, formatDateTimeInput } from "@/shared/helpers/format";
+import { TimeInput } from "@/components/molecules/time-input";
+import { formatCalendarDateInput, formatTimeInput, parseCalendarDateInput } from "@/shared/helpers/format";
 import { INCOME_TYPES, INCOME_TYPE_LABELS, type IncomeType } from "@/shared/constants/income-types";
 import { PLATFORMS, PLATFORM_LABELS, type Platform } from "@/shared/constants/platforms";
 import type { VehicleOption } from "@/shared/types/vehicle";
@@ -53,6 +54,30 @@ type WorkShiftFormProps = {
   onSuccess?: () => void;
 };
 
+function calculateOnlineHoursFromTimes(
+  date: Date,
+  startTime: string,
+  endTime: string | null | undefined
+): number | null {
+  if (!endTime || !startTime) return null;
+
+  const [startHours, startMinutes] = startTime.split(":").map(Number);
+  const [endHours, endMinutes] = endTime.split(":").map(Number);
+
+  let start = new Date(date);
+  start.setHours(startHours, startMinutes, 0, 0);
+
+  let end = new Date(date);
+  end.setHours(endHours, endMinutes, 0, 0);
+
+  if (end <= start) {
+    end.setDate(end.getDate() + 1);
+  }
+
+  const diffMs = end.getTime() - start.getTime();
+  return Math.round((diffMs / (1000 * 60 * 60)) * 100) / 100;
+}
+
 export function WorkShiftForm({ vehicles, initialData, onSuccess }: WorkShiftFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -70,9 +95,9 @@ export function WorkShiftForm({ vehicles, initialData, onSuccess }: WorkShiftFor
     defaultValues: initialData
       ? {
           vehicleId: initialData.vehicleId ?? null,
-          date: formatDateInput(initialData.date) as unknown as Date,
-          startedAt: formatDateTimeInput(initialData.startedAt) as unknown as Date,
-          endedAt: initialData.endedAt ? (formatDateTimeInput(initialData.endedAt) as unknown as Date) : null,
+          date: formatCalendarDateInput(initialData.date) as unknown as Date,
+          startTime: formatTimeInput(initialData.startedAt),
+          endTime: initialData.endedAt ? formatTimeInput(initialData.endedAt) : null,
           onlineHours: initialData.onlineHours,
           totalTrips: initialData.totalTrips,
           distanceKm: initialData.distanceKm,
@@ -85,9 +110,9 @@ export function WorkShiftForm({ vehicles, initialData, onSuccess }: WorkShiftFor
         }
       : {
           vehicleId: vehicles[0]?.id ?? null,
-          date: formatDateInput(new Date()) as unknown as Date,
-          startedAt: formatDateTimeInput(new Date()) as unknown as Date,
-          endedAt: null,
+          date: formatCalendarDateInput(new Date()) as unknown as Date,
+          startTime: "",
+          endTime: null,
           onlineHours: null,
           totalTrips: 0,
           distanceKm: null,
@@ -97,6 +122,20 @@ export function WorkShiftForm({ vehicles, initialData, onSuccess }: WorkShiftFor
   });
 
   const { fields, append, remove } = useFieldArray({ control, name: "incomes" });
+
+  const date = watch("date");
+  const startTime = watch("startTime");
+  const endTime = watch("endTime");
+  const onlineHours = watch("onlineHours");
+
+  useEffect(() => {
+    if (startTime && endTime && (onlineHours === null || onlineHours === undefined)) {
+      const calculated = calculateOnlineHoursFromTimes(new Date(date), startTime, endTime);
+      if (calculated !== null) {
+        setValue("onlineHours", calculated);
+      }
+    }
+  }, [date, startTime, endTime, onlineHours, setValue]);
 
   const onSubmit = (values: WorkShiftCreateInput) => {
     startTransition(async () => {
@@ -147,7 +186,17 @@ export function WorkShiftForm({ vehicles, initialData, onSuccess }: WorkShiftFor
 
       <div className="grid gap-4 sm:grid-cols-2">
         <FormField label="Fecha" error={errors.date?.message}>
-          <Input type="date" {...register("date")} />
+          <Controller
+            name="date"
+            control={control}
+            render={({ field }) => (
+              <Input
+                type="date"
+                value={formatCalendarDateInput(field.value)}
+                onChange={(e) => field.onChange(parseCalendarDateInput(e.target.value))}
+              />
+            )}
+          />
         </FormField>
 
         <FormField label="Viajes" error={errors.totalTrips?.message}>
@@ -162,23 +211,21 @@ export function WorkShiftForm({ vehicles, initialData, onSuccess }: WorkShiftFor
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <FormField label="Inicio" error={errors.startedAt?.message}>
-          <Input type="datetime-local" {...register("startedAt")} />
+        <FormField label="Hora de inicio" error={errors.startTime?.message}>
+          <Input type="time" {...register("startTime")} />
         </FormField>
 
-        <FormField label="Fin" error={errors.endedAt?.message}>
-          <Input type="datetime-local" {...register("endedAt")} />
+        <FormField label="Hora de fin" error={errors.endTime?.message}>
+          <Input type="time" {...register("endTime")} />
         </FormField>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <FormField label="Horas en línea" error={errors.onlineHours?.message}>
+        <FormField label="Tiempo en línea" error={errors.onlineHours?.message}>
           <Controller
             name="onlineHours"
             control={control}
-            render={({ field }) => (
-              <NumericInput value={field.value} onChange={field.onChange} decimals={1} min={0} />
-            )}
+            render={({ field }) => <TimeInput value={field.value} onChange={field.onChange} />}
           />
         </FormField>
 

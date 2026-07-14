@@ -1,4 +1,6 @@
-export type DashboardTodayStats = {
+export type DashboardPeriod = "day" | "week" | "month";
+
+export type DashboardPeriodStats = {
   income: number;
   expenses: number;
   profit: number;
@@ -38,10 +40,11 @@ export type ExpenseDistributionDataPoint = {
 };
 
 export type DashboardDto = {
-  today: DashboardTodayStats;
+  period: DashboardPeriod;
+  referenceDate: Date;
+  stats: DashboardPeriodStats;
   goal: DashboardGoal;
-  last7Days: DailyDataPoint[];
-  last30Days: DailyDataPoint[];
+  incomeTrend: DailyDataPoint[];
   monthlyProfit: MonthlyProfitDataPoint[];
   expenseDistribution: ExpenseDistributionDataPoint[];
 };

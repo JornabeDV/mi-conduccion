@@ -3,6 +3,7 @@
 import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { ChartCard } from "@/components/atoms/chart-card";
 import { formatCurrency, formatNumber } from "@/shared/helpers/format";
+import { formatDuration } from "@/shared/helpers/time";
 import type { VehicleStatistics } from "@/server/services/statistics-service";
 
 type VehicleStatsChartsProps = {
@@ -55,8 +56,8 @@ export function VehicleStatsCharts({ stats }: VehicleStatsChartsProps) {
       <ChartCard title="Distancia" description="Kilómetros recorridos">
         <div className="text-2xl font-bold">{formatNumber(stats.distanceKm)} km</div>
       </ChartCard>
-      <ChartCard title="Horas" description="Horas online">
-        <div className="text-2xl font-bold">{formatNumber(stats.hours)} h</div>
+      <ChartCard title="Tiempo" description="Tiempo online">
+        <div className="text-2xl font-bold">{formatDuration(stats.hours)}</div>
       </ChartCard>
       <ChartCard title="Viajes" description="Total de viajes">
         <div className="text-2xl font-bold">{formatNumber(stats.trips)}</div>

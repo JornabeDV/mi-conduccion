@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   CalendarClock,
   Receipt,
+  Wallet,
   Fuel,
 } from "lucide-react";
 
@@ -14,6 +15,7 @@ const BOTTOM_ITEMS = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { label: "Jornadas", href: "/jornadas", icon: CalendarClock },
   { label: "Gastos", href: "/gastos", icon: Receipt },
+  { label: "Caja", href: "/administracion-caja", icon: Wallet },
   { label: "Combustible", href: "/combustible", icon: Fuel },
 ];
 

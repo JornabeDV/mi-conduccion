@@ -3,6 +3,10 @@ import { z } from "zod";
 export const incomeTypeEnum = ["PLATFORM", "TIP", "BONUS", "OTHER"] as const;
 export const platformEnum = ["UBER", "CABIFY", "DIDI", "MAXIM", "INDRIVE", "OTHER"] as const;
 
+const timeStringSchema = z
+  .string()
+  .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "Formato de hora inválido. Usá HH:mm");
+
 export const shiftIncomeSchema = z.object({
   type: z.enum(incomeTypeEnum),
   platform: z.enum(platformEnum).nullable().optional(),
@@ -13,8 +17,8 @@ export const shiftIncomeSchema = z.object({
 export const workShiftCreateSchema = z.object({
   vehicleId: z.string().uuid().nullable().optional(),
   date: z.coerce.date(),
-  startedAt: z.coerce.date(),
-  endedAt: z.coerce.date().nullable().optional(),
+  startTime: timeStringSchema,
+  endTime: timeStringSchema.nullable().optional(),
   onlineHours: z.coerce.number().nonnegative().nullable().optional(),
   totalTrips: z.coerce.number().int().nonnegative().default(0),
   distanceKm: z.coerce.number().nonnegative().nullable().optional(),

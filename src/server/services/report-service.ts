@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { format } from "date-fns";
+import { decimalHoursToTimeString } from "@/shared/helpers/time";
 
 function escapeCsv(value: string | number | null | undefined): string {
   const str = String(value ?? "");
@@ -28,7 +29,7 @@ export class ReportService {
         orderBy: { date: "desc" },
       });
 
-      const headers = ["Fecha", "Vehículo", "Inicio", "Fin", "Viajes", "Distancia km", "Horas online", "Ingresos", "Notas"];
+      const headers = ["Fecha", "Vehículo", "Inicio", "Fin", "Viajes", "Distancia km", "Tiempo en línea", "Ingresos", "Notas"];
       const rows = shifts.map((shift) => {
         const income = shift.incomes.reduce((sum, i) => sum + Number(i.amount), 0);
         return [
@@ -38,7 +39,7 @@ export class ReportService {
           shift.endedAt ? format(shift.endedAt, "yyyy-MM-dd HH:mm") : "",
           shift.totalTrips,
           shift.distanceKm ? Number(shift.distanceKm).toFixed(2) : "",
-          shift.onlineHours ? Number(shift.onlineHours).toFixed(2) : "",
+          shift.onlineHours ? decimalHoursToTimeString(Number(shift.onlineHours)) : "",
           income.toFixed(2),
           shift.notes,
         ];

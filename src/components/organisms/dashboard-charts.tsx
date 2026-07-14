@@ -21,13 +21,14 @@ import type {
   DailyDataPoint,
   ExpenseDistributionDataPoint,
   MonthlyProfitDataPoint,
+  DashboardPeriod,
 } from "@/server/dto/dashboard";
 
 type DashboardChartsProps = {
-  last7Days: DailyDataPoint[];
-  last30Days: DailyDataPoint[];
+  incomeTrend: DailyDataPoint[];
   monthlyProfit: MonthlyProfitDataPoint[];
   expenseDistribution: ExpenseDistributionDataPoint[];
+  period: DashboardPeriod;
 };
 
 const COLORS = [
@@ -41,6 +42,21 @@ const COLORS = [
   "hsl(var(--input))",
   "hsl(var(--destructive))",
 ];
+
+const TREND_TITLES: Record<DashboardPeriod, { title: string; description: string }> = {
+  day: {
+    title: "Ingresos últimos 7 días",
+    description: "Contexto de la última semana.",
+  },
+  week: {
+    title: "Ingresos de la semana",
+    description: "Suma diaria de ingresos.",
+  },
+  month: {
+    title: "Ingresos del mes",
+    description: "Tendencia diaria de ingresos.",
+  },
+};
 
 function CurrencyTooltip({
   active,
@@ -65,16 +81,18 @@ function CurrencyTooltip({
 }
 
 export function DashboardCharts({
-  last7Days,
-  last30Days,
+  incomeTrend,
   monthlyProfit,
   expenseDistribution,
+  period,
 }: DashboardChartsProps) {
+  const trend = TREND_TITLES[period];
+
   return (
     <div className="grid gap-6 lg:grid-cols-2">
-      <ChartCard title="Ingresos últimos 7 días" description="Suma diaria de ingresos.">
+      <ChartCard title={trend.title} description={trend.description}>
         <ResponsiveContainer width="100%" height={240}>
-          <BarChart data={last7Days}>
+          <BarChart data={incomeTrend}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis
               dataKey="label"
@@ -91,49 +109,6 @@ export function DashboardCharts({
             <Tooltip content={<CurrencyTooltip />} />
             <Bar dataKey="income" fill="hsl(var(--foreground))" radius={[4, 4, 0, 0]} />
           </BarChart>
-        </ResponsiveContainer>
-      </ChartCard>
-
-      <ChartCard title="Ingresos últimos 30 días" description="Tendencia diaria de ingresos.">
-        <ResponsiveContainer width="100%" height={240}>
-          <AreaChart data={last30Days}>
-            <defs>
-              <linearGradient id="incomeGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="hsl(var(--foreground))"
-                  stopOpacity={0.2}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="hsl(var(--foreground))"
-                  stopOpacity={0}
-                />
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis
-              dataKey="label"
-              tick={{ fontSize: 12 }}
-              axisLine={false}
-              tickLine={false}
-              minTickGap={16}
-            />
-            <YAxis
-              tick={{ fontSize: 12 }}
-              axisLine={false}
-              tickLine={false}
-              tickFormatter={(value) => `$${value}`}
-            />
-            <Tooltip content={<CurrencyTooltip />} />
-            <Area
-              type="monotone"
-              dataKey="income"
-              stroke="hsl(var(--foreground))"
-              fill="url(#incomeGradient)"
-              strokeWidth={2}
-            />
-          </AreaChart>
         </ResponsiveContainer>
       </ChartCard>
 

@@ -17,11 +17,12 @@ export async function createWorkShift(formData: unknown): Promise<ActionResult> 
     const userId = await requireUserId();
     const input = workShiftCreateSchema.parse(formData) as WorkShiftCreateInput;
     await workShiftService.create(userId, {
-      ...input,
+      vehicleId: input.vehicleId ?? null,
       date: input.date,
-      startedAt: input.startedAt,
-      endedAt: input.endedAt ?? null,
+      startTime: input.startTime,
+      endTime: input.endTime ?? null,
       onlineHours: input.onlineHours ?? null,
+      totalTrips: input.totalTrips,
       distanceKm: input.distanceKm ?? null,
       notes: input.notes ?? null,
       incomes: input.incomes.map((income) => ({
@@ -44,7 +45,14 @@ export async function updateWorkShift(id: string, formData: unknown): Promise<Ac
     userId = await requireUserId();
     const input = workShiftUpdateSchema.parse(formData) as WorkShiftUpdateInput;
     await workShiftService.update(id, userId, {
-      ...input,
+      vehicleId: input.vehicleId,
+      date: input.date,
+      startTime: input.startTime,
+      endTime: input.endTime,
+      onlineHours: input.onlineHours,
+      totalTrips: input.totalTrips,
+      distanceKm: input.distanceKm,
+      notes: input.notes,
       incomes: input.incomes?.map((income) => ({
         ...income,
         platform: income.platform ?? null,

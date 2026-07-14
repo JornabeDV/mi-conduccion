@@ -30,13 +30,15 @@ export default async function EstadisticasPage({
         </div>
       ) : (
         <Tabs defaultValue={allStats[0]?.vehicleId}>
-          <TabsList className="w-full overflow-x-auto">
-            {allStats.map((stats) => (
-              <TabsTrigger key={stats.vehicleId} value={stats.vehicleId}>
-                {stats.vehicleName}
-              </TabsTrigger>
-            ))}
-          </TabsList>
+          {allStats.length > 1 && (
+            <TabsList className="w-full">
+              {allStats.map((stats) => (
+                <TabsTrigger key={stats.vehicleId} value={stats.vehicleId}>
+                  {stats.vehicleName}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          )}
           {allStats.map((stats) => (
             <TabsContent key={stats.vehicleId} value={stats.vehicleId}>
               <VehicleStatsCharts stats={stats} />

@@ -31,12 +31,14 @@ async function main() {
     throw new Error("No se pudo crear el usuario de prueba");
   }
 
-  await prisma.driverProfile.create({
-    data: {
+  await prisma.driverProfile.upsert({
+    where: { userId: user.id },
+    create: {
       userId: user.id,
       preferredCurrency: DEFAULT_CURRENCY,
       timezone: DEFAULT_TIMEZONE,
     },
+    update: {},
   });
 
   const vehicle = await prisma.vehicle.create({

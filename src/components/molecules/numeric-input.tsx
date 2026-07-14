@@ -13,6 +13,7 @@ type NumericInputProps = Omit<
   FormatNumberOptions & {
     value?: number | null;
     onChange?: (value: number | null) => void;
+    allowNegative?: boolean;
   };
 
 export const NumericInput = forwardRef<HTMLInputElement, NumericInputProps>(
@@ -25,6 +26,7 @@ export const NumericInput = forwardRef<HTMLInputElement, NumericInputProps>(
       max,
       prefix,
       suffix,
+      allowNegative = false,
       className,
       ...props
     },
@@ -51,13 +53,14 @@ export const NumericInput = forwardRef<HTMLInputElement, NumericInputProps>(
         thousandSeparator="."
         decimalSeparator=","
         decimalScale={decimals}
-        allowNegative={false}
+        allowNegative={allowNegative}
         prefix={prefix}
         suffix={suffix}
         value={value ?? ""}
         onValueChange={handleValueChange}
         isAllowed={(values) => {
           if (values.floatValue === undefined) return true;
+          if (!allowNegative && values.floatValue < 0) return false;
           if (min !== undefined && values.floatValue < min) return false;
           if (max !== undefined && values.floatValue > max) return false;
           return true;

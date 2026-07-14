@@ -56,7 +56,10 @@ export function UserMenu({ user }: UserMenuProps) {
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem disabled>
+          <DropdownMenuItem
+            onClick={() => router.push("/perfil")}
+            className="cursor-pointer"
+          >
             <User className="mr-2 size-4" />
             Perfil
           </DropdownMenuItem>

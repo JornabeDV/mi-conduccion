@@ -11,7 +11,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { DeleteRowButton } from "@/components/molecules/delete-row-button";
-import { formatCurrency, formatDate, formatNumber } from "@/shared/helpers/format";
+import { formatCurrency, formatCalendarDate, formatNumber } from "@/shared/helpers/format";
+import { formatDuration } from "@/shared/helpers/time";
 import { Plus, Pencil } from "lucide-react";
 import { ButtonLink } from "@/components/molecules/button-link";
 
@@ -47,7 +48,7 @@ export default async function JornadasPage() {
                 <TableHead>Vehículo</TableHead>
                 <TableHead>Viajes</TableHead>
                 <TableHead>Distancia</TableHead>
-                <TableHead>Horas</TableHead>
+                <TableHead>Tiempo</TableHead>
                 <TableHead>Ingresos</TableHead>
                 <TableHead className="text-right">Acciones</TableHead>
               </TableRow>
@@ -55,11 +56,11 @@ export default async function JornadasPage() {
             <TableBody>
               {shifts.map((shift) => (
                 <TableRow key={shift.id}>
-                  <TableCell>{formatDate(shift.date)}</TableCell>
+                  <TableCell>{formatCalendarDate(shift.date)}</TableCell>
                   <TableCell>{shift.vehicleName ?? "—"}</TableCell>
                   <TableCell>{shift.totalTrips}</TableCell>
                   <TableCell>{formatNumber(shift.distanceKm)} km</TableCell>
-                  <TableCell>{formatNumber(shift.onlineHours)} h</TableCell>
+                  <TableCell>{formatDuration(shift.onlineHours)}</TableCell>
                   <TableCell>{formatCurrency(shift.totalIncome)}</TableCell>
                   <TableCell className="text-right">
                     <div className="inline-flex justify-end gap-1">

@@ -11,6 +11,7 @@ import {
   Calendar,
   History,
   FileText,
+  Wallet,
 } from "lucide-react";
 
 export type NavItem = {
@@ -24,6 +25,7 @@ export const MAIN_NAV: NavItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { label: "Jornadas", href: "/jornadas", icon: CalendarClock },
   { label: "Gastos", href: "/gastos", icon: Receipt },
+  { label: "Caja", href: "/administracion-caja", icon: Wallet },
   { label: "Combustible", href: "/combustible", icon: Fuel },
   { label: "Vehículo", href: "/vehiculo", icon: Car },
   { label: "Recordatorios", href: "/recordatorios", icon: Bell },

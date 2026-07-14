@@ -4,19 +4,25 @@ import {
   eachMonthOfInterval,
   endOfDay,
   endOfMonth,
+  endOfWeek,
   format,
   isSameDay,
   isSameMonth,
+  isSameWeek,
   startOfDay,
   startOfMonth,
+  startOfWeek,
   subDays,
   subMonths,
 } from "date-fns";
+import { UTCDate } from "@date-fns/utc";
 import { prisma } from "@/lib/prisma";
 import type {
   DashboardDto,
   DashboardGoal,
+  DashboardPeriod,
 } from "@/server/dto/dashboard";
+import { parseCalendarDateInput } from "@/shared/helpers/format";
 
 function toNumber(value: Decimal | number | null | undefined): number {
   if (value === null || value === undefined) return 0;
@@ -27,16 +33,62 @@ function sum(values: (number | null | undefined)[]): number {
   return values.reduce<number>((acc, value) => acc + (value ?? 0), 0);
 }
 
-export class DashboardService {
-  async getDashboard(userId: string): Promise<DashboardDto> {
-    const today = new Date();
-    const startToday = startOfDay(today);
-    const endToday = endOfDay(today);
+function getPeriodInterval(period: DashboardPeriod, referenceDate: Date) {
+  if (period === "day") {
+    return {
+      start: startOfDay(referenceDate),
+      end: endOfDay(referenceDate),
+    };
+  }
 
-    const start30Days = startOfDay(subDays(today, 29));
-    const start12Months = startOfMonth(subMonths(today, 11));
-    const startMonth = startOfMonth(today);
-    const endMonth = endOfMonth(today);
+  if (period === "week") {
+    return {
+      start: startOfWeek(referenceDate, { weekStartsOn: 1 }),
+      end: endOfWeek(referenceDate, { weekStartsOn: 1 }),
+    };
+  }
+
+  return {
+    start: startOfMonth(referenceDate),
+    end: endOfMonth(referenceDate),
+  };
+}
+
+function isInPeriod(
+  date: Date,
+  period: DashboardPeriod,
+  referenceDate: Date
+): boolean {
+  if (period === "day") return isSameDay(date, referenceDate);
+  if (period === "week") return isSameWeek(date, referenceDate, { weekStartsOn: 1 });
+  return isSameMonth(date, referenceDate);
+}
+
+function getGoalPeriod(period: DashboardPeriod): "DAILY" | "WEEKLY" | "MONTHLY" {
+  if (period === "day") return "DAILY";
+  if (period === "week") return "WEEKLY";
+  return "MONTHLY";
+}
+
+export class DashboardService {
+  async getDashboard(
+    userId: string,
+    period: DashboardPeriod = "day",
+    dateString?: string
+  ): Promise<DashboardDto> {
+    const referenceDate = dateString
+      ? new UTCDate(parseCalendarDateInput(dateString))
+      : new UTCDate();
+
+    const periodInterval = getPeriodInterval(period, referenceDate);
+
+    const trendStart =
+      period === "day" ? startOfDay(subDays(referenceDate, 6)) : periodInterval.start;
+    const trendEnd = period === "day" ? endOfDay(referenceDate) : periodInterval.end;
+
+    const start12Months = startOfMonth(subMonths(referenceDate, 11));
+    const startMonth = startOfMonth(referenceDate);
+    const endMonth = endOfMonth(referenceDate);
 
     const [shifts, expenses, fuelLogs, allShifts, allExpenses, monthExpenses, goal] =
       await Promise.all([
@@ -44,7 +96,7 @@ export class DashboardService {
           where: {
             userId,
             deletedAt: null,
-            date: { gte: start30Days, lte: endToday },
+            date: { gte: trendStart, lte: trendEnd },
           },
           include: { incomes: true },
         }),
@@ -52,21 +104,21 @@ export class DashboardService {
           where: {
             userId,
             deletedAt: null,
-            date: { gte: start30Days, lte: endToday },
+            date: { gte: trendStart, lte: trendEnd },
           },
         }),
         prisma.fuelLog.findMany({
           where: {
             userId,
             deletedAt: null,
-            date: { gte: start30Days, lte: endToday },
+            date: { gte: trendStart, lte: trendEnd },
           },
         }),
         prisma.workShift.findMany({
           where: {
             userId,
             deletedAt: null,
-            date: { gte: start12Months, lte: endToday },
+            date: { gte: start12Months, lte: endOfDay(referenceDate) },
           },
           include: { incomes: true },
         }),
@@ -74,7 +126,7 @@ export class DashboardService {
           where: {
             userId,
             deletedAt: null,
-            date: { gte: start12Months, lte: endToday },
+            date: { gte: start12Months, lte: endOfDay(referenceDate) },
           },
         }),
         prisma.expense.findMany({
@@ -87,64 +139,49 @@ export class DashboardService {
         prisma.goal.findFirst({
           where: {
             userId,
-            period: "DAILY",
+            period: getGoalPeriod(period),
             isActive: true,
-            startDate: { lte: today },
-            OR: [{ endDate: null }, { endDate: { gte: today } }],
+            startDate: { lte: referenceDate },
+            OR: [{ endDate: null }, { endDate: { gte: referenceDate } }],
           },
         }),
       ]);
 
-    const todayShifts = shifts.filter((shift) =>
-      isSameDay(shift.date, today)
+    const periodShifts = shifts.filter((shift) =>
+      isInPeriod(shift.date, period, referenceDate)
     );
 
-    const todayIncome = sum(
-      todayShifts.flatMap((shift) =>
+    const periodIncome = sum(
+      periodShifts.flatMap((shift) =>
         shift.incomes.map((income) => toNumber(income.amount))
       )
     );
 
-    const todayTrips = sum(todayShifts.map((shift) => shift.totalTrips));
-    const todayHours = sum(
-      todayShifts.map((shift) => toNumber(shift.onlineHours))
+    const periodTrips = sum(periodShifts.map((shift) => shift.totalTrips));
+    const periodHours = sum(
+      periodShifts.map((shift) => toNumber(shift.onlineHours))
     );
 
-    const todayExpenses = sum(
+    const periodExpenses = sum(
       expenses
-        .filter((expense) => isSameDay(expense.date, today))
+        .filter((expense) => isInPeriod(expense.date, period, referenceDate))
         .map((expense) => toNumber(expense.amount))
     );
 
-    const todayFuel = sum(
+    const periodFuel = sum(
       fuelLogs
-        .filter((log) => isSameDay(log.date, today))
+        .filter((log) => isInPeriod(log.date, period, referenceDate))
         .map((log) => toNumber(log.totalAmount))
     );
 
-    const profit = todayIncome - todayExpenses;
-    const margin = todayIncome > 0 ? (profit / todayIncome) * 100 : 0;
-    const profitPerHour = todayHours > 0 ? profit / todayHours : 0;
-    const incomePerTrip = todayTrips > 0 ? todayIncome / todayTrips : 0;
+    const profit = periodIncome - periodExpenses;
+    const margin = periodIncome > 0 ? (profit / periodIncome) * 100 : 0;
+    const profitPerHour = periodHours > 0 ? profit / periodHours : 0;
+    const incomePerTrip = periodTrips > 0 ? periodIncome / periodTrips : 0;
 
-    const last7Days = eachDayOfInterval({
-      start: subDays(today, 6),
-      end: today,
-    }).map((date) => ({
-      date: date.toISOString(),
-      label: format(date, "dd/MM"),
-      income: sum(
-        shifts
-          .filter((shift) => isSameDay(shift.date, date))
-          .flatMap((shift) =>
-            shift.incomes.map((income) => toNumber(income.amount))
-          )
-      ),
-    }));
-
-    const last30Days = eachDayOfInterval({
-      start: subDays(today, 29),
-      end: today,
+    const incomeTrend = eachDayOfInterval({
+      start: trendStart,
+      end: trendEnd,
     }).map((date) => ({
       date: date.toISOString(),
       label: format(date, "dd/MM"),
@@ -159,7 +196,7 @@ export class DashboardService {
 
     const months = eachMonthOfInterval({
       start: start12Months,
-      end: today,
+      end: referenceDate,
     });
 
     const monthlyProfit = months.map((month) => {
@@ -213,31 +250,32 @@ export class DashboardService {
 
     if (goal) {
       const target = toNumber(goal.targetAmount);
-      const percentage = target > 0 ? Math.min(100, (todayIncome / target) * 100) : 0;
+      const percentage = target > 0 ? Math.min(100, (periodIncome / target) * 100) : 0;
 
       dashboardGoal = {
         targetAmount: target,
-        currentAmount: todayIncome,
+        currentAmount: periodIncome,
         percentage,
-        remaining: Math.max(0, target - todayIncome),
+        remaining: Math.max(0, target - periodIncome),
       };
     }
 
     return {
-      today: {
-        income: todayIncome,
-        expenses: todayExpenses,
+      period,
+      referenceDate,
+      stats: {
+        income: periodIncome,
+        expenses: periodExpenses,
         profit,
-        hours: todayHours,
-        trips: todayTrips,
-        fuel: todayFuel,
+        hours: periodHours,
+        trips: periodTrips,
+        fuel: periodFuel,
         margin,
         profitPerHour,
         incomePerTrip,
       },
       goal: dashboardGoal,
-      last7Days,
-      last30Days,
+      incomeTrend,
       monthlyProfit,
       expenseDistribution,
     };

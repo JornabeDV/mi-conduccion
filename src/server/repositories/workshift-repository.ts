@@ -36,6 +36,7 @@ export interface WorkShiftRepository {
   create(input: CreateWorkShiftInput): Promise<WorkShiftWithRelations>;
   findById(id: string): Promise<WorkShiftWithRelations | null>;
   findByUser(userId: string): Promise<WorkShiftWithRelations[]>;
+  findByUserVehicleAndDate(userId: string, vehicleId: string, date: Date): Promise<WorkShiftWithRelations | null>;
   update(id: string, input: UpdateWorkShiftInput): Promise<WorkShiftWithRelations>;
   softDelete(id: string): Promise<WorkShiftWithRelations>;
 }
@@ -96,6 +97,13 @@ export class PrismaWorkShiftRepository implements WorkShiftRepository {
       where: { userId, deletedAt: null },
       include: workShiftInclude,
       orderBy: { date: "desc" },
+    });
+  }
+
+  async findByUserVehicleAndDate(userId: string, vehicleId: string, date: Date): Promise<WorkShiftWithRelations | null> {
+    return prisma.workShift.findFirst({
+      where: { userId, vehicleId, date, deletedAt: null },
+      include: workShiftInclude,
     });
   }
 
