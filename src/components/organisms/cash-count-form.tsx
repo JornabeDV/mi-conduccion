@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransition, useMemo } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -97,12 +97,12 @@ export function CashCountForm({ shiftId, type, shiftDate, walletProvider, initia
     },
   });
 
-  const denominations = watch("denominations");
+  const denominations = useWatch({ control, name: "denominations" });
   const transferAmount = watch("transferAmount") ?? 0;
   const appAmount = watch("appAmount") ?? 0;
 
   const cashTotal = useMemo(() => {
-    return denominations.reduce((sum, d) => sum + d.value * d.quantity, 0);
+    return (denominations ?? []).reduce((sum, d) => sum + d.value * d.quantity, 0);
   }, [denominations]);
 
   const total = cashTotal + transferAmount + appAmount;
