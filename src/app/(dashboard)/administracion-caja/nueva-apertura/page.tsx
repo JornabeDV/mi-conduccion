@@ -10,7 +10,12 @@ export default async function NuevaAperturaPage() {
   const session = await getSession().catch(() => null);
   if (!session) redirect("/login");
 
-  const vehicles = await vehicleRepository.findByUser(session.user.id);
+  const vehicles = (await vehicleRepository.findByUser(session.user.id)).map((v) => ({
+    id: v.id,
+    brand: v.brand,
+    model: v.model,
+    licensePlate: v.licensePlate,
+  }));
   const profile = await driverProfileService.get(session.user.id);
 
   return (
