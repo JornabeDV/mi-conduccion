@@ -6,6 +6,8 @@ import {
   Car,
   Fuel,
   Percent,
+  Route,
+  Gauge,
 } from "lucide-react";
 import { KpiCard } from "@/components/atoms/kpi-card";
 import { Progress } from "@/components/ui/progress";
@@ -35,6 +37,10 @@ const PERIOD_LABELS = {
     fuel: "Combustible",
     fuelDescription: "Gasto en combustible hoy",
     margin: "Margen estimado",
+    distance: "Kilómetros recorridos",
+    distanceDescription: "Distancia total hoy",
+    profitPerKm: "Ganancia / km",
+    profitPerKmDescription: "Ganancia por kilómetro hoy",
   },
   week: {
     income: "Ingresos de la semana",
@@ -47,6 +53,10 @@ const PERIOD_LABELS = {
     fuel: "Combustible",
     fuelDescription: "Gasto en combustible esta semana",
     margin: "Margen estimado",
+    distance: "Kilómetros recorridos",
+    distanceDescription: "Distancia total esta semana",
+    profitPerKm: "Ganancia / km",
+    profitPerKmDescription: "Ganancia por kilómetro esta semana",
   },
   month: {
     income: "Ingresos del mes",
@@ -59,6 +69,10 @@ const PERIOD_LABELS = {
     fuel: "Combustible",
     fuelDescription: "Gasto en combustible este mes",
     margin: "Margen estimado",
+    distance: "Kilómetros recorridos",
+    distanceDescription: "Distancia total este mes",
+    profitPerKm: "Ganancia / km",
+    profitPerKmDescription: "Ganancia por kilómetro este mes",
   },
 };
 
@@ -145,6 +159,20 @@ export function DashboardStats({ stats, goal, period }: DashboardStatsProps) {
         value={formatPercentage(stats.margin)}
         description="Rentabilidad sobre ingresos"
         icon={<Percent />}
+      />
+
+      <KpiCard
+        title={labels.distance}
+        value={formatNumber(stats.distanceKm)}
+        description={labels.distanceDescription}
+        icon={<Route />}
+      />
+
+      <KpiCard
+        title={labels.profitPerKm}
+        value={formatCurrency(stats.profitPerKm)}
+        description={labels.profitPerKmDescription}
+        icon={<Gauge />}
       />
     </div>
   );

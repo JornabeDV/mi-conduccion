@@ -155,6 +155,9 @@ export class DashboardService {
     const periodHours = sum(
       periodShifts.map((shift) => toNumber(shift.onlineHours))
     );
+    const periodDistanceKm = sum(
+      periodShifts.map((shift) => toNumber(shift.distanceKm))
+    );
 
     const periodExpenses = sum(
       expenses
@@ -172,6 +175,7 @@ export class DashboardService {
     const margin = periodIncome > 0 ? (profit / periodIncome) * 100 : 0;
     const profitPerHour = periodHours > 0 ? profit / periodHours : 0;
     const incomePerTrip = periodTrips > 0 ? periodIncome / periodTrips : 0;
+    const profitPerKm = periodDistanceKm > 0 ? profit / periodDistanceKm : 0;
 
     const trendDates = eachDayOfInterval({
       start: trendInterval.start,
@@ -261,6 +265,8 @@ export class DashboardService {
         margin,
         profitPerHour,
         incomePerTrip,
+        distanceKm: periodDistanceKm,
+        profitPerKm,
       },
       goal: dashboardGoal,
       incomeTrend,

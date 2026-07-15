@@ -10,6 +10,8 @@ export type DashboardPeriodStats = {
   margin: number;
   profitPerHour: number;
   incomePerTrip: number;
+  distanceKm: number;
+  profitPerKm: number;
 };
 
 export type DashboardGoal = {
