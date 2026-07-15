@@ -28,6 +28,14 @@ export function formatNumber(value: number | null | undefined): string {
   return formatNumberInput(value, { decimals: 2 });
 }
 
+export function formatInteger(value: number | null | undefined): string {
+  if (value === null || value === undefined || Number.isNaN(value)) {
+    return "—";
+  }
+
+  return formatNumberInput(value, { decimals: 0 });
+}
+
 export function formatDate(date: Date | string | null | undefined): string {
   if (!date) return "—";
   return format(new Date(date), "dd/MM/yyyy", { locale: es });

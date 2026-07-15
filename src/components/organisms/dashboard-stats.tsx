@@ -11,7 +11,12 @@ import {
 } from "lucide-react";
 import { KpiCard } from "@/components/atoms/kpi-card";
 import { Progress } from "@/components/ui/progress";
-import { formatCurrency, formatNumber, formatPercentage } from "@/shared/helpers/format";
+import {
+  formatCurrency,
+  formatNumber,
+  formatPercentage,
+  formatInteger,
+} from "@/shared/helpers/format";
 import { formatDuration } from "@/shared/helpers/time";
 import type {
   DashboardGoal,
@@ -128,7 +133,7 @@ export function DashboardStats({ stats, goal, period }: DashboardStatsProps) {
 
       <KpiCard
         title={labels.trips}
-        value={formatNumber(stats.trips)}
+        value={formatInteger(stats.trips)}
         description={labels.tripsDescription}
         icon={<Car />}
       />
