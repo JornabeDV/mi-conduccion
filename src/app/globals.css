@@ -81,6 +81,11 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --chart-income: #10b981;
+  --chart-expenses: #f43f5e;
+  --chart-profit: #3b82f6;
+  --chart-distance: #8b5cf6;
+  --chart-fuel: #f97316;
 }
 
 .dark {
@@ -115,6 +120,11 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  --chart-income: #34d399;
+  --chart-expenses: #fb7185;
+  --chart-profit: #60a5fa;
+  --chart-distance: #a78bfa;
+  --chart-fuel: #fb923c;
 }
 
 @layer base {

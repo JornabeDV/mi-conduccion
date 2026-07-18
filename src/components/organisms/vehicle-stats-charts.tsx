@@ -1,27 +1,14 @@
 "use client";
 
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  Cell,
-  Legend,
-  Line,
-  LineChart,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { ResponsiveLine } from "@nivo/line";
+import { ResponsivePie } from "@nivo/pie";
 import { ChartCard } from "@/components/atoms/chart-card";
+import { useNivoTheme } from "@/hooks/use-nivo-theme";
 import { formatCurrency, formatNumber } from "@/shared/helpers/format";
 import {
   STATISTICS_GROUPING_LABELS,
   type StatisticsGrouping,
   type StatisticsVehiclePoint,
-  type ExpenseDistributionPoint,
 } from "@/server/dto/statistics";
 
 type VehicleStatsChartsProps = {
@@ -30,11 +17,11 @@ type VehicleStatsChartsProps = {
 };
 
 const COLORS = {
-  income: "#10b981", // emerald-500
-  expenses: "#f43f5e", // rose-500
-  profit: "#3b82f6", // blue-500
-  distance: "#8b5cf6", // violet-500
-  fuel: "#f97316", // orange-500
+  income: "var(--chart-income)",
+  expenses: "var(--chart-expenses)",
+  profit: "var(--chart-profit)",
+  distance: "var(--chart-distance)",
+  fuel: "var(--chart-fuel)",
 };
 
 const PIE_COLORS = [
@@ -54,139 +41,166 @@ const CHART_TITLES: Record<StatisticsGrouping, { main: string; distance: string 
   month: { main: "Evolución mensual", distance: "Kilómetros mensuales" },
 };
 
-function CurrencyTooltip({ active, payload, label }: { active?: boolean; payload?: { name: string; value: number }[]; label?: string }) {
-  if (active && payload && payload.length) {
-    return (
-      <div className="rounded-lg border bg-popover p-2 text-xs text-popover-foreground shadow-md">
-        <p className="font-medium">{label}</p>
-        {payload.map((entry, index) => (
-          <p key={index}>{entry.name}: {formatCurrency(entry.value)}</p>
-        ))}
-      </div>
-    );
-  }
-  return null;
-}
-
-function NumberTooltip({ active, payload, label }: { active?: boolean; payload?: { name: string; value: number }[]; label?: string }) {
-  if (active && payload && payload.length) {
-    return (
-      <div className="rounded-lg border bg-popover p-2 text-xs text-popover-foreground shadow-md">
-        <p className="font-medium">{label}</p>
-        {payload.map((entry, index) => (
-          <p key={index}>{entry.name}: {formatNumber(entry.value)}</p>
-        ))}
-      </div>
-    );
-  }
-  return null;
-}
-
-function PercentTooltip({ active, payload }: { active?: boolean; payload?: { payload: ExpenseDistributionPoint }[] }) {
-  if (active && payload && payload.length) {
-    const data = payload[0].payload;
-    return (
-      <div className="rounded-lg border bg-popover p-2 text-xs text-popover-foreground shadow-md">
-        <p className="font-medium">{data.category}</p>
-        <p>{formatCurrency(data.amount)}</p>
-        <p>{data.percentage.toFixed(1)}%</p>
-      </div>
-    );
-  }
-  return null;
-}
-
 export function VehicleStatsCharts({ stats, grouping }: VehicleStatsChartsProps) {
   const titles = CHART_TITLES[grouping];
   const timeline = stats.timeline;
+  const chartTheme = useNivoTheme();
 
-  const targetTicks = 6;
-  const xAxisInterval = Math.max(0, Math.ceil(timeline.length / targetTicks) - 1);
+  const evolutionData = [
+    {
+      id: "Ingresos",
+      color: COLORS.income,
+      data: timeline.map((d) => ({ x: d.label, y: d.income })),
+    },
+    {
+      id: "Gastos",
+      color: COLORS.expenses,
+      data: timeline.map((d) => ({ x: d.label, y: d.expenses })),
+    },
+    {
+      id: "Ganancia",
+      color: COLORS.profit,
+      data: timeline.map((d) => ({ x: d.label, y: d.profit })),
+    },
+  ];
+
+  const distanceData = [
+    {
+      id: "Kilómetros",
+      color: COLORS.distance,
+      data: timeline.map((d) => ({ x: d.label, y: d.distanceKm })),
+    },
+  ];
+
+  const pieData = stats.expenseDistribution.map((entry, index) => ({
+    id: entry.category,
+    label: entry.category,
+    value: entry.amount,
+    color: PIE_COLORS[index % PIE_COLORS.length],
+  }));
 
   return (
     <div className="grid gap-4 lg:grid-cols-2">
       <div className="lg:col-span-2">
         <ChartCard title={titles.main} description={`Ingresos, gastos y ganancia (${STATISTICS_GROUPING_LABELS[grouping].toLowerCase()})`}>
-          <ResponsiveContainer width="100%" height={320}>
-            <AreaChart data={timeline} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-              <defs>
-                <linearGradient id="incomeGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={COLORS.income} stopOpacity={0.3} />
-                  <stop offset="95%" stopColor={COLORS.income} stopOpacity={0} />
-                </linearGradient>
-                <linearGradient id="expensesGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={COLORS.expenses} stopOpacity={0.3} />
-                  <stop offset="95%" stopColor={COLORS.expenses} stopOpacity={0} />
-                </linearGradient>
-                <linearGradient id="profitGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={COLORS.profit} stopOpacity={0.3} />
-                  <stop offset="95%" stopColor={COLORS.profit} stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
-              <XAxis
-                dataKey="label"
-                tick={{ fontSize: 12 }}
-                axisLine={false}
-                tickLine={false}
-                stroke="hsl(var(--muted-foreground))"
-                interval={xAxisInterval}
-              />
-              <YAxis tick={{ fontSize: 12 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v}`} stroke="hsl(var(--muted-foreground))" />
-              <Tooltip content={<CurrencyTooltip />} />
-              <Legend wrapperStyle={{ paddingTop: 8 }} />
-              <Area type="monotone" dataKey="income" name="Ingresos" stroke={COLORS.income} fill="url(#incomeGradient)" strokeWidth={2} />
-              <Area type="monotone" dataKey="expenses" name="Gastos" stroke={COLORS.expenses} fill="url(#expensesGradient)" strokeWidth={2} />
-              <Area type="monotone" dataKey="profit" name="Ganancia" stroke={COLORS.profit} fill="url(#profitGradient)" strokeWidth={2} />
-            </AreaChart>
-          </ResponsiveContainer>
+          <div className="h-[320px]">
+            <ResponsiveLine
+              data={evolutionData}
+              colors={{ datum: "color" }}
+              theme={chartTheme}
+              margin={{ top: 20, right: 20, bottom: 50, left: 70 }}
+              xScale={{ type: "point" }}
+              yScale={{ type: "linear", min: "auto", max: "auto", stacked: false }}
+              curve="monotoneX"
+              axisBottom={{
+                tickSize: 0,
+                tickPadding: 10,
+                tickRotation: 0,
+              }}
+              axisLeft={{
+                tickSize: 0,
+                tickPadding: 10,
+                format: (value) => `$${value}`,
+              }}
+              enableGridX={false}
+              pointSize={0}
+              pointBorderWidth={0}
+              pointBorderColor={{ from: "seriesColor" }}
+              useMesh
+              enableSlices={false}
+              legends={[
+                {
+                  anchor: "bottom",
+                  direction: "row",
+                  justify: false,
+                  translateY: 40,
+                  itemsSpacing: 16,
+                  itemWidth: 80,
+                  itemHeight: 16,
+                  itemDirection: "left-to-right",
+                  symbolSize: 12,
+                  symbolShape: "circle",
+                },
+              ]}
+              tooltip={({ point }) => (
+                <div style={{ color: chartTheme.colors.popoverForeground }}>
+                  <strong>{point.data.x as string}</strong>
+                  <div style={{ color: point.seriesColor }}>
+                    {point.seriesId}: {formatCurrency(point.data.y as number)}
+                  </div>
+                </div>
+              )}
+            />
+          </div>
         </ChartCard>
       </div>
 
       <ChartCard title="Distribución de gastos" description="Por categoría">
         {stats.expenseDistribution.length === 0 ? (
-          <div className="flex h-[280px] items-center justify-center text-sm text-muted-foreground">
+          <div className="flex h-[320px] items-center justify-center text-sm text-muted-foreground">
             Sin gastos registrados.
           </div>
         ) : (
-          <ResponsiveContainer width="100%" height={320}>
-            <PieChart margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
-              <Tooltip content={<PercentTooltip />} />
-              <Legend layout="horizontal" align="center" verticalAlign="bottom" wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
-              <Pie
-                data={stats.expenseDistribution}
-                dataKey="amount"
-                nameKey="category"
-                innerRadius={50}
-                outerRadius={80}
-                paddingAngle={2}
-              >
-                {stats.expenseDistribution.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
-                ))}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
+          <div className="h-[320px]">
+            <ResponsivePie
+              data={pieData}
+              theme={chartTheme}
+              margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+              innerRadius={0.55}
+              padAngle={2}
+              cornerRadius={6}
+              colors={{ datum: "data.color" }}
+              borderWidth={0}
+              arcLinkLabelsColor={{ from: "color" }}
+              arcLinkLabelsThickness={2}
+              arcLinkLabelsTextColor={chartTheme.colors.foreground}
+              arcLabelsTextColor={chartTheme.colors.popoverForeground}
+              enableArcLabels={false}
+              tooltip={({ datum }) => (
+                <div style={{ color: chartTheme.colors.popoverForeground }}>
+                  <strong>{datum.id}</strong>
+                  <div>{formatCurrency(datum.value)}</div>
+                </div>
+              )}
+            />
+          </div>
         )}
       </ChartCard>
 
       <ChartCard title={titles.distance} description="Distancia recorrida">
-        <ResponsiveContainer width="100%" height={280}>
-          <LineChart data={timeline} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
-            <XAxis
-              dataKey="label"
-              tick={{ fontSize: 12 }}
-              axisLine={false}
-              tickLine={false}
-              stroke="hsl(var(--muted-foreground))"
-              interval={xAxisInterval}
-            />
-            <YAxis tick={{ fontSize: 12 }} axisLine={false} tickLine={false} tickFormatter={(v) => `${v} km`} stroke="hsl(var(--muted-foreground))" />
-            <Tooltip content={<NumberTooltip />} />
-            <Line type="monotone" dataKey="distanceKm" name="Kilómetros" stroke={COLORS.distance} strokeWidth={3} dot={{ r: 4, fill: COLORS.distance }} activeDot={{ r: 6 }} />
-          </LineChart>
-        </ResponsiveContainer>
+        <div className="h-[280px]">
+          <ResponsiveLine
+            data={distanceData}
+            colors={{ datum: "color" }}
+            theme={chartTheme}
+            margin={{ top: 20, right: 20, bottom: 50, left: 70 }}
+            xScale={{ type: "point" }}
+            yScale={{ type: "linear", min: "auto", max: "auto", stacked: false }}
+            curve="monotoneX"
+            axisBottom={{
+              tickSize: 0,
+              tickPadding: 10,
+              tickRotation: 0,
+            }}
+            axisLeft={{
+              tickSize: 0,
+              tickPadding: 10,
+              format: (value) => `${value} km`,
+            }}
+            enableGridX={false}
+            pointSize={6}
+            pointBorderWidth={0}
+            pointBorderColor={{ from: "seriesColor" }}
+            useMesh
+            enableSlices={false}
+            tooltip={({ point }) => (
+              <div style={{ color: chartTheme.colors.popoverForeground }}>
+                <strong>{point.data.x as string}</strong>
+                <div>{formatNumber(point.data.y as number)} km</div>
+              </div>
+            )}
+          />
+        </div>
       </ChartCard>
 
       <ChartCard title="Rendimiento de combustible" description="km/L promedio">
