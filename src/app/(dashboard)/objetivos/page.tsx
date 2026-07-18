@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { DeleteRowButton } from "@/components/molecules/delete-row-button";
 import { formatCurrency, formatDate } from "@/shared/helpers/format";
 import { GOAL_PERIOD_LABELS } from "@/shared/constants/goal-periods";
-import { Plus, Pencil } from "lucide-react";
+import { Plus, Pencil, Calculator } from "lucide-react";
 import { ButtonLink } from "@/components/molecules/button-link";
 
 export default async function ObjetivosPage() {
@@ -23,10 +23,16 @@ export default async function ObjetivosPage() {
           <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Objetivos</h1>
           <p className="text-sm text-muted-foreground">Seguimiento de metas de ingresos</p>
         </div>
-        <ButtonLink href="/objetivos/nuevo" className="w-full sm:w-auto">
-          <Plus className="mr-1 size-4" />
-          Nuevo objetivo
-        </ButtonLink>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <ButtonLink href="/objetivos/simulador" variant="outline" className="w-full sm:w-auto">
+            <Calculator className="mr-1 size-4" />
+            Simulador
+          </ButtonLink>
+          <ButtonLink href="/objetivos/nuevo" className="w-full sm:w-auto">
+            <Plus className="mr-1 size-4" />
+            Nuevo objetivo
+          </ButtonLink>
+        </div>
       </div>
 
       {goals.length === 0 ? (

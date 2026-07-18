@@ -176,6 +176,7 @@ export class DashboardService {
     const profitPerHour = periodHours > 0 ? profit / periodHours : 0;
     const incomePerTrip = periodTrips > 0 ? periodIncome / periodTrips : 0;
     const profitPerKm = periodDistanceKm > 0 ? profit / periodDistanceKm : 0;
+    const kmPerHour = periodHours > 0 ? periodDistanceKm / periodHours : 0;
 
     const trendDates = eachDayOfInterval({
       start: trendInterval.start,
@@ -267,6 +268,7 @@ export class DashboardService {
         incomePerTrip,
         distanceKm: periodDistanceKm,
         profitPerKm,
+        kmPerHour,
       },
       goal: dashboardGoal,
       incomeTrend,

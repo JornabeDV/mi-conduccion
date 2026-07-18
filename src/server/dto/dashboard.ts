@@ -12,6 +12,7 @@ export type DashboardPeriodStats = {
   incomePerTrip: number;
   distanceKm: number;
   profitPerKm: number;
+  kmPerHour: number;
 };
 
 export type DashboardGoal = {

@@ -19,7 +19,7 @@ export default async function NuevaAperturaPage() {
   const profile = await driverProfileService.get(session.user.id);
 
   return (
-    <div className="mx-auto max-w-2xl space-y-4">
+    <div className="space-y-4">
       <div className="flex items-center gap-2">
         <ButtonLink href="/administracion-caja" variant="ghost" size="icon-sm">
           <ArrowLeft className="size-4" />

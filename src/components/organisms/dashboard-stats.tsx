@@ -8,6 +8,7 @@ import {
   Percent,
   Route,
   Gauge,
+  Activity,
 } from "lucide-react";
 import { KpiCard } from "@/components/atoms/kpi-card";
 import { Progress } from "@/components/ui/progress";
@@ -46,6 +47,8 @@ const PERIOD_LABELS = {
     distanceDescription: "Distancia total hoy",
     profitPerKm: "Ganancia / km",
     profitPerKmDescription: "Ganancia por kilómetro hoy",
+    kmPerHour: "Km / hora",
+    kmPerHourDescription: "Kilómetros por hora online hoy",
   },
   week: {
     income: "Ingresos de la semana",
@@ -62,6 +65,8 @@ const PERIOD_LABELS = {
     distanceDescription: "Distancia total esta semana",
     profitPerKm: "Ganancia / km",
     profitPerKmDescription: "Ganancia por kilómetro esta semana",
+    kmPerHour: "Km / hora",
+    kmPerHourDescription: "Kilómetros por hora online esta semana",
   },
   month: {
     income: "Ingresos del mes",
@@ -78,6 +83,8 @@ const PERIOD_LABELS = {
     distanceDescription: "Distancia total este mes",
     profitPerKm: "Ganancia / km",
     profitPerKmDescription: "Ganancia por kilómetro este mes",
+    kmPerHour: "Km / hora",
+    kmPerHourDescription: "Kilómetros por hora online este mes",
   },
 };
 
@@ -178,6 +185,13 @@ export function DashboardStats({ stats, goal, period }: DashboardStatsProps) {
         value={formatCurrency(stats.profitPerKm)}
         description={labels.profitPerKmDescription}
         icon={<Gauge />}
+      />
+
+      <KpiCard
+        title={labels.kmPerHour}
+        value={formatNumber(stats.kmPerHour)}
+        description={labels.kmPerHourDescription}
+        icon={<Activity />}
       />
     </div>
   );

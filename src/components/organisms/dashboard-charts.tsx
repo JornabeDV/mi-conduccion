@@ -1,14 +1,10 @@
 "use client";
 
 import {
-  Area,
-  AreaChart,
   Bar,
   BarChart,
   CartesianGrid,
-  Cell,
-  Pie,
-  PieChart,
+  Legend,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -16,10 +12,8 @@ import {
 } from "recharts";
 import { ChartCard } from "@/components/atoms/chart-card";
 import { formatCurrency } from "@/shared/helpers/format";
-import { EXPENSE_CATEGORY_LABELS } from "@/shared/constants/expense-categories";
 import type {
   DailyDataPoint,
-  ExpenseDistributionDataPoint,
   ProfitTrendDataPoint,
   DashboardPeriod,
 } from "@/server/dto/dashboard";
@@ -27,21 +21,14 @@ import type {
 type DashboardChartsProps = {
   incomeTrend: DailyDataPoint[];
   profitTrend: ProfitTrendDataPoint[];
-  expenseDistribution: ExpenseDistributionDataPoint[];
   period: DashboardPeriod;
 };
 
-const COLORS = [
-  "hsl(var(--foreground))",
-  "hsl(var(--muted-foreground))",
-  "hsl(var(--primary))",
-  "hsl(var(--secondary-foreground))",
-  "hsl(var(--accent-foreground))",
-  "hsl(var(--ring))",
-  "hsl(var(--border))",
-  "hsl(var(--input))",
-  "hsl(var(--destructive))",
-];
+const COLORS = {
+  income: "#10b981", // emerald-500
+  expenses: "#f43f5e", // rose-500
+  profit: "#3b82f6", // blue-500
+};
 
 const TREND_TITLES: Record<
   DashboardPeriod,
@@ -85,7 +72,7 @@ function CurrencyTooltip({
   label,
 }: {
   active?: boolean;
-  payload?: { value: number }[];
+  payload?: { name: string; value: number }[];
   label?: string;
 }) {
   if (active && payload && payload.length) {
@@ -93,7 +80,9 @@ function CurrencyTooltip({
       <div className="rounded-lg border bg-popover p-2 text-xs text-popover-foreground shadow-md">
         <p className="font-medium">{label}</p>
         {payload.map((entry, index) => (
-          <p key={index}>{formatCurrency(entry.value)}</p>
+          <p key={index}>
+            {entry.name}: {formatCurrency(entry.value)}
+          </p>
         ))}
       </div>
     );
@@ -104,7 +93,6 @@ function CurrencyTooltip({
 export function DashboardCharts({
   incomeTrend,
   profitTrend,
-  expenseDistribution,
   period,
 }: DashboardChartsProps) {
   const titles = TREND_TITLES[period];
@@ -112,94 +100,53 @@ export function DashboardCharts({
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <ChartCard title={titles.income.title} description={titles.income.description}>
-        <ResponsiveContainer width="100%" height={240}>
-          <BarChart data={incomeTrend}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+        <ResponsiveContainer width="100%" height={280}>
+          <BarChart data={incomeTrend} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
             <XAxis
               dataKey="label"
               tick={{ fontSize: 12 }}
               axisLine={false}
               tickLine={false}
+              stroke="hsl(var(--muted-foreground))"
             />
             <YAxis
               tick={{ fontSize: 12 }}
               axisLine={false}
               tickLine={false}
               tickFormatter={(value) => `$${value}`}
+              stroke="hsl(var(--muted-foreground))"
             />
             <Tooltip content={<CurrencyTooltip />} />
-            <Bar dataKey="income" fill="hsl(var(--foreground))" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="income" name="Ingresos" fill={COLORS.income} radius={[6, 6, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </ChartCard>
 
       <ChartCard title={titles.profit.title} description={titles.profit.description}>
-        <ResponsiveContainer width="100%" height={240}>
-          <BarChart data={profitTrend}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+        <ResponsiveContainer width="100%" height={280}>
+          <BarChart data={profitTrend} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
             <XAxis
               dataKey="label"
               tick={{ fontSize: 12 }}
               axisLine={false}
               tickLine={false}
+              stroke="hsl(var(--muted-foreground))"
             />
             <YAxis
               tick={{ fontSize: 12 }}
               axisLine={false}
               tickLine={false}
               tickFormatter={(value) => `$${value}`}
+              stroke="hsl(var(--muted-foreground))"
             />
             <Tooltip content={<CurrencyTooltip />} />
-            <Bar dataKey="income" fill="hsl(var(--foreground))" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="expenses" fill="hsl(var(--muted-foreground))" radius={[4, 4, 0, 0]} />
+            <Legend wrapperStyle={{ paddingTop: 8 }} />
+            <Bar dataKey="income" name="Ingresos" fill={COLORS.income} radius={[6, 6, 0, 0]} />
+            <Bar dataKey="expenses" name="Gastos" fill={COLORS.expenses} radius={[6, 6, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
-      </ChartCard>
-
-      <ChartCard title="Distribución de gastos" description="Gastos del mes actual por categoría.">
-        {expenseDistribution.length === 0 ? (
-          <div className="flex h-[240px] items-center justify-center text-sm text-muted-foreground">
-            Sin gastos registrados este mes.
-          </div>
-        ) : (
-          <ResponsiveContainer width="100%" height={240}>
-            <PieChart>
-              <Tooltip
-                content={({ active, payload }) => {
-                  if (active && payload && payload.length) {
-                    const data = payload[0].payload as ExpenseDistributionDataPoint;
-                    return (
-                      <div className="rounded-lg border bg-popover p-2 text-xs text-popover-foreground shadow-md">
-                        <p className="font-medium">
-                          {EXPENSE_CATEGORY_LABELS[data.category as keyof typeof EXPENSE_CATEGORY_LABELS] ??
-                            data.category}
-                        </p>
-                        <p>{formatCurrency(data.amount)}</p>
-                        <p>{data.percentage.toFixed(1)}%</p>
-                      </div>
-                    );
-                  }
-                  return null;
-                }}
-              />
-              <Pie
-                data={expenseDistribution}
-                dataKey="amount"
-                nameKey="category"
-                innerRadius={60}
-                outerRadius={90}
-                paddingAngle={2}
-              >
-                {expenseDistribution.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
-                ))}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
-        )}
       </ChartCard>
     </div>
   );

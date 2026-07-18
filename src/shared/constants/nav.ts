@@ -12,6 +12,7 @@ import {
   History,
   FileText,
   Wallet,
+  Menu,
 } from "lucide-react";
 
 export type NavItem = {
@@ -40,5 +41,5 @@ export const BOTTOM_NAV: NavItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { label: "Jornadas", href: "/jornadas", icon: CalendarClock },
   { label: "Gastos", href: "/gastos", icon: Receipt },
-  { label: "Más", href: "#menu", icon: BarChart3 },
+  { label: "Más", href: "#menu", icon: Menu },
 ];
